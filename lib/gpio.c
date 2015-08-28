@@ -9,44 +9,20 @@ pin:
 cd /sys/class/gpio
 /sys/class/gpio # for i in gpiochip* ; do echo `cat $i/label`: `cat $i/base` ; done
 
-4412 display:
-GPA0: 0
-GPF2: 105
-GPF3: 114
-GPJ0: 121
-GPJ1: 130
-GPK0: 136
-GPK1: 144
-GPK2: 152
-GPB: 16
-GPK3: 160
-GPL0: 168
-GPL1: 177
-GPL2: 181
-GPX0: 190
-GPX1: 199
-GPX2: 208
-GPX3: 217
-GPY0: 226
-GPY1: 233
-GPY2: 238
-GPY3: 245
-GPC0: 25
-GPY4: 254
-GPY5: 263
-GPY6: 272
-GPZ: 281
-GPC1: 31
-GPD0: 37
-GPD1: 42
-GPM0: 47
-GPM1: 56
-GPM2: 64
-GPM3: 70
-GPM4: 79
-GPF0: 87
-GPA1: 9
-GPF1: 96
+nanopi display:
+GPIOA0: 0
+GPIOB0: 32
+GPIOC0: 64
+GPIOD0: 96
+GPIOE0: 128
+GPIOF0: 160
+GPIOG0: 192
+GPIOH0: 224
+GPIOJ0: 256
+GPIOK0: 288
+GPIOL0: 320
+GPIOM0: 352
+
  */
 
 static int isPinValid(int pin) 
@@ -79,6 +55,21 @@ static int isPinValid(int pin)
         return 1;
     }
     if (pin == GPIO_PIN10) {
+        return 1;
+    }
+    if (pin == GPIO_PIN11) {
+        return 1;
+    }
+    if (pin == GPIO_PIN12) {
+        return 1;
+    }
+    if (pin == GPIO_PIN13) {
+        return 1;
+    }
+    if (pin == GPIO_PIN14) {
+        return 1;
+    }
+    if (pin == GPIO_PIN15) {
         return 1;
     }
     return 0;

@@ -55,7 +55,7 @@ EXPORT int dht11Read(int type, int *data)
         ret = readIntValueFromFile(dht11Path);
         break;
     case DHT_HUMIDITY:
-        strcat(dht11Path, "in_in_input");
+        strcat(dht11Path, "in_humidityrelative_input");
         ret = readIntValueFromFile(dht11Path);
         break;
     default:
@@ -87,7 +87,7 @@ static int Hcsr04Write(char* fileName, char* buff) {
     return 0;
 }
 
-EXPORT int Hcsr04Init(int echoPin, int triggerPin) 
+EXPORT int Hcsr04Init(int Pin) 
 {
     clearLastError();
     struct HCSR04_resource res;
@@ -96,8 +96,7 @@ EXPORT int Hcsr04Init(int echoPin, int triggerPin)
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);
     strcpy(hcsr04Path, HCSR04_PATH);
 
-    res.echoPin = echoPin;
-    res.triggerPin = triggerPin;
+    res.Pin = Pin;
     
     char *resStr = (char *)&res;    
     if (Hcsr04Write(hcsr04Path, resStr) == -1) {
@@ -113,8 +112,7 @@ EXPORT void Hcsr04DeInit()
 {
     clearLastError();
     struct HCSR04_resource res;
-    res.echoPin = -1;
-    res.triggerPin = -1;
+    res.Pin = -1;
 
     char *hcsr04Path = (char *) malloc(FILE_PATH_LENGTH);
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);
@@ -131,24 +129,27 @@ EXPORT int Hcsr04Read(int *distance)
 {
     clearLastError();
     int ret = HCSR04_MAX_DISTANCE + 1;
-    int errCount = -1;
+    //int errCount = -1;
 
     char *hcsr04Path = (char *) malloc(FILE_PATH_LENGTH);
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);
     strcpy(hcsr04Path, HCSR04_PATH);
 
-    while(ret > HCSR04_MAX_DISTANCE && errCount < 5) {
-        ret = readIntValueFromFile(hcsr04Path);
-        errCount++;
-    }
-
-    if (errCount == 5) {
-        ret = -1;
-        setLastError("Invalid hcsr04 data");
-    } else {            
+    //while(ret > HCSR04_MAX_DISTANCE && errCount < 5) {
+        //ret = readIntValueFromFile(hcsr04Path);
+	//printf("ret=%d \n",ret);
+	ret = readIntValueFromFile(hcsr04Path);
+	printf("ret=%d\n",ret);
+        //errCount++;
+    //}
+	//printf("ret=%d\n",errCount);
+    //if (errCount == 5) {
+    //    ret = -1;
+    //    setLastError("Invalid hcsr04 data");
+   // } else {            
         *distance = (int)(ret / HCSR04_PER_METRE);
         ret = 0;
-    }
+   // }
 
     free(hcsr04Path);
     return ret;

@@ -22,7 +22,7 @@ CFLAGS+=-fPIC
 OBJDIR=.obj
 DEPDIR=.deps
 LIBSRC=common.c gpio.c i2c.c  w1.c led.c pwm.c iio.c filectl.c pcf8591.c
-LIBSRC+=pcf8574.c adxl34x.c GPIOSensor.c hmc5883.c pwm.c
+LIBSRC+=pcf8574.c adxl34x.c gpio_sensor.c hmc5883.c pwm.c
 LIBOBJ=$(addprefix $(OBJDIR)/, $(addsuffix .o, $(basename $(LIBSRC))))
 DEPS=$(patsubst %.c,$(DEPDIR)/%.Po,$(LIBSRC))
 
@@ -52,4 +52,4 @@ install: $(LIB)
 	cp libfahw.so $(INSTALLPATH)/libs/
 	cp libfahw.a $(INSTALLPATH)/libs/
 clean:
-	rm -f $(LIB) $(LIBOBJ) $(SLIB) $(DEPS)
+	rm -rf $(LIB) $(LIBOBJ) $(SLIB) $(DEPS) $(OBJDIR) $(DEPDIR)

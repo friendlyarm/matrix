@@ -18,14 +18,13 @@ void dht11DeInit(int devFD);
 
 // HCSR04
 #define HCSR04_PATH             "/sys/class/hcsr04/value"  
-#define HCSR04_MAX_DISTANCE     (23200)
+#define HCSR04_MAX_DISTANCE     (200000)
 #define HCSR04_PER_METRE        (58)
 struct HCSR04_resource {
-    int echoPin;
-    int triggerPin; 
+    int Pin;
 };
 
-int Hcsr04Init(int echoPin, int triggerPin);
+int Hcsr04Init(int echoPin);
 int Hcsr04Read(int *data);
 void Hcsr04DeInit();
 #endif

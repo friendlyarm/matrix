@@ -21,7 +21,7 @@ EXPORT int PWMPlay(int pin, int freq, int duty)
         return -1;
     }
 
-    if (ioctl(devFD, PWM_IOCTL_CONFIG, arg) == -1) {
+    if (ioctl(devFD, PWM_IOCTL_SET_FREQ, arg) == -1) {
         setLastError("Fail to set pwm");
         closeHW(devFD);
         return -1;
@@ -40,7 +40,7 @@ EXPORT int PWMStop(int pin)
         return -1;
     }
 
-    if (ioctl(devFD, PWM_IOCTL_RELEASE, &pin) == -1) {
+    if (ioctl(devFD, PWM_IOCTL_STOP, &pin) == -1) {
         setLastError("Fail to stop pwm");
         closeHW(devFD);
         return -1;

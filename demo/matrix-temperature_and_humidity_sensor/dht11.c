@@ -18,11 +18,8 @@ void parseCmd(int argc, char **argv, int *pin)
     case 4:
         *pin = GPIO_PIN4;
         break;
-    case 9:
-        *pin = GPIO_PIN9;
-        break;
-    case 10:
-        *pin = GPIO_PIN10;
+    case 5:
+        *pin = GPIO_PIN5;
         break;
     default:
         printf("Unsupported pin GPIO_PIN%d\n", num);
