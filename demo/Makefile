@@ -11,6 +11,7 @@ matrix-button \
 matrix-buzzer \
 matrix-compass \
 matrix-i2c_lcd1602 \
+matrix-i2c_lcd1602_key \
 matrix-joystick \
 matrix-led \
 matrix-relay \
