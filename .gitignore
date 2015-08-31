@@ -23,44 +23,10 @@ libfahw.a
 .project
 .cproject
 
-/demo/adxl34x/adxl34x
-/demo/buzzer/buzzer
-/demo/ds18b20/ds18b20
-/demo/gpio/gpio
-/demo/IRRemote/IRRemote
-/demo/LCD1602/LCD1602
-/demo/MAX7219/MAX7219
-/demo/pcf8591/pcf8591
-/demo/relay/relay
-/demo/servo/servo
-/demo/onboardButton/onboardButton
-/demo/dht11/dht11
-/demo/eeprom/eeprom
-/demo/hcsr04/hcsr04
-/demo/L298N/L298N
-/demo/onboardLED/onboardLED
-/demo/OLED/OLED
-/demo/PS2rocker/PS2rocker
-/demo/serial/serial
-/demo/soil/soil
-/demo/mq2/mq2
-/demo/digitron/digitron
-/demo/RGBLED/RGBLED
-/demo/LED/LED
-/demo/button/button
-/demo/IRCounter/IRCounter
-/demo/obstacle/obstacle
-/demo/track/track
-/demo/lean/lean
-/demo/compass/compass
-/demo/L298N/L298N
-/demo/sound/sound
-/demo/smoke/smoke
-/demo/arduino/arduino
-/demo/getevent/getevent
-/demo/fire/fire
-
+# gedit
 *~
+
+/install/*
 
 
 
