@@ -12,6 +12,7 @@
 #include "libfahw-hmc5883.h"
 #include "libfahw-w1.h"
 #include "libfahw-pwm.h"
+#include "libfahw-mcp23017.h"
 
 int getLastError(char* dest, int maxlen);
 
