@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
 
     if (strcmp(status, "on") == 0) {
         ret = setGPIOValue(pin, GPIO_HIGH);
-    } else {
+    } else if (strcmp(status, "off") == 0) {
         ret = setGPIOValue(pin, GPIO_LOW);
     }
     return ret;
