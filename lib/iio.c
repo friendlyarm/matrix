@@ -129,28 +129,11 @@ EXPORT int Hcsr04Read(int *distance)
 {
     clearLastError();
     int ret = HCSR04_MAX_DISTANCE + 1;
-    //int errCount = -1;
-
     char *hcsr04Path = (char *) malloc(FILE_PATH_LENGTH);
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);
     strcpy(hcsr04Path, HCSR04_PATH);
-
-    //while(ret > HCSR04_MAX_DISTANCE && errCount < 5) {
-        //ret = readIntValueFromFile(hcsr04Path);
-	//printf("ret=%d \n",ret);
-	ret = readIntValueFromFile(hcsr04Path);
-	printf("ret=%d\n",ret);
-        //errCount++;
-    //}
-	//printf("ret=%d\n",errCount);
-    //if (errCount == 5) {
-    //    ret = -1;
-    //    setLastError("Invalid hcsr04 data");
-   // } else {            
-        *distance = (int)(ret / HCSR04_PER_METRE);
-        ret = 0;
-   // }
-
+    ret = readIntValueFromFile(hcsr04Path);
+    *distance = (int)(ret / HCSR04_PER_METRE);
     free(hcsr04Path);
     return ret;
 }
