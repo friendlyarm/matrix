@@ -15,9 +15,9 @@ $(SUBDIRS):
 clean distclean: $(patsubst %, %.clean, $(SUBDIRS))
 
 install: 
-	mkdir -p $(INSTALLDIR)/bin
+	mkdir -p $(INSTALLDIR)/usr/bin
 	for app in $(wildcard matrix*); do \
-	  install --mode=755 $$app/$$app $(INSTALLDIR)/bin; \
+	  install --mode=755 $$app/$$app $(INSTALLDIR)/usr/bin; \
 	done;  
 	
 .PHONY: $(PHONY) install clean distclean
