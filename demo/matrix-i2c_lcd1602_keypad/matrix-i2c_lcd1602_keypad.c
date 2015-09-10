@@ -4,46 +4,114 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <time.h>
+#include <string.h> 
+#include <sys/socket.h>
+#include <linux/sockios.h>
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #include "libfahw.h"
+
+#define TIME_STR_BUFSIZE     32
+
+int showIP(int devFD, char *netDev)
+{
+    int socketFD;
+    struct sockaddr_in *sin;
+    struct ifreq ifr;
+    socketFD = socket(AF_INET, SOCK_DGRAM, 0); 
+    if(socketFD ==-1) {
+        perror("socket error!\n");
+        return -1;
+    }
+    strcpy(ifr.ifr_name, netDev);
+    if(ioctl(socketFD, SIOCGIFADDR, &ifr) < 0) {
+        perror("ioctl error\n");
+        return -1;
+    } else {
+        sin = (struct sockaddr_in *)&(ifr.ifr_addr);
+        LCD1602KeyDispStr(devFD, 0, 1, inet_ntoa(sin->sin_addr));
+    }
+    return 0;
+}
 
 int main(int argc, char ** argv)
 {
     int devFD;
     int keyValue = 0;
-    char keyStr[8];
+    int showDefault = 1;
+    int needClear = 1;
+    time_t lt;
+    char curTime[TIME_STR_BUFSIZE];
+    char preTime[TIME_STR_BUFSIZE];
+    int hostNameLen = 0;
+    
     if ((devFD = LCD1602KeyInit()) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
     }
-
-    if (LCD1602KeyClear(devFD) == -1) {
-        printf("Fail to Clear\n");
-        return -1;
-    }
-    printf("clearing LCD1602\n");
-    sleep(1);
-    
-    if (LCD1602KeyDispLines(devFD, "FriendlyARM", "NanoPi & Matrix") == -1) {
-        printf("Fail to Display String\n");
-        return -1;
-    }
-    printf("displaying LCD1602\n");
-    sleep(1);
-    
-    printf("waiting key press\n");
     LCD1602KeyClear(devFD);
-    LCD1602KeyDispStr(devFD, 0, 0, "key value:");
+    printf("waiting key press...\n");
+
     while (1) {
         keyValue = LCD1602GetKey(devFD);
-        if (keyValue == 0xf) {
-            keyStr[0] = '0';
-            sprintf(&keyStr[1], "%x", keyValue);
-        } else {
-            sprintf(keyStr, "%x", keyValue);
+        switch (keyValue) {
+        // F1
+        case 0x1e:
+            showDefault = 0;
+            LCD1602KeyClear(devFD);
+            LCD1602KeyDispStr(devFD, 0, 0, "#F1-IP address");
+            showIP(devFD, "usb0");
+            break;
+            // F2    
+        case 0x1d:
+            showDefault = 0;
+            LCD1602KeyClear(devFD);
+            LCD1602KeyDispStr(devFD, 0, 0, "#F2-Your favor");
+            LCD1602KeyDispStr(devFD, 0, 1, "Come add it");
+            break;
+            // F3    
+        case 0x1b:
+            showDefault = 0;
+            LCD1602KeyClear(devFD);
+            LCD1602KeyDispStr(devFD, 0, 0, "#F3-Your idea");
+            LCD1602KeyDispStr(devFD, 0, 1, "Come show it");
+            break;
+            // F4
+        case 0x17:
+            showDefault = 0;
+            LCD1602KeyClear(devFD);
+            LCD1602KeyDispStr(devFD, 0, 0, "#F4-About");
+            LCD1602KeyDispStr(devFD, 0, 1, "by FriendlyARM");
+            break;
+            // F5
+        case 0xf:
+            showDefault = 1;
+            break;
         }
-        LCD1602KeyDispStr(devFD, 0, 1, keyStr);
-        usleep(1000);
-    }
+        if (showDefault == 1) {
+            if (needClear) {
+                LCD1602KeyClear(devFD);
+                LCD1602KeyDispStr(devFD, 0, 0, "#Default");
+                needClear = 0;
+            }
+            memset(curTime, 0, TIME_STR_BUFSIZE);
+            lt = time(NULL);
+            strncpy(curTime, ctime(&lt) + 11, 8);
+            if(strcmp(curTime, preTime)) {
+                printf("time:%s\n", curTime);
+                LCD1602KeyDispStr(devFD, 0, 1, curTime);
+            }
+            memset(preTime, 0, TIME_STR_BUFSIZE);
+            strcpy(preTime, curTime);
+        } else {
+            needClear = 1;
+            usleep(1000);
+        }
+    }    
     printf("quit reading key press\n");
     LCD1602KeyDeInit(devFD);
     return 0;
