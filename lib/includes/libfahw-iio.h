@@ -1,8 +1,6 @@
 #ifndef __FRIENDLYARM_HARDWARE_IIO_H__
 #define __FRIENDLYARM_HARDWARE_IIO_H__
 
-#define FILE_PATH_LENGTH           (128)
-
 // DHT11
 #define DHT11_DEV               "/dev/dht11"        
 #define	DHT_TEMP 		        (1)

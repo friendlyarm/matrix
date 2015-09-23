@@ -32,4 +32,6 @@ extern int writeIntValueToFile(char* fileName, int value);
 extern int readValueFromFile(char* fileName, char* buff, int len);
 extern int readIntValueFromFile(char* fileName);
 
+#define FILE_PATH_LENGTH           (128)
+
 #endif

@@ -47,7 +47,6 @@ int main(int argc, char ** argv)
     time_t lt;
     char curTime[TIME_STR_BUFSIZE];
     char preTime[TIME_STR_BUFSIZE];
-    int hostNameLen = 0;
     
     if ((devFD = LCD1602KeyInit()) == -1) {
         printf("Fail to init LCD1602\n");

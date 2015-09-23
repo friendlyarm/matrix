@@ -1,6 +1,6 @@
-SUBDIRS				= $(wildcard matrix*)
-TARGET				= subdirs
-PHONY			   += $(TARGET) $(SUBDIRS) %.clean
+SUBDIRS			= $(wildcard matrix*)
+TARGET			= subdirs
+PHONY			+= $(TARGET) $(SUBDIRS) %.clean
 
 all: $(TARGET)
 
@@ -16,8 +16,10 @@ clean distclean: $(patsubst %, %.clean, $(SUBDIRS))
 
 install: 
 	mkdir -p $(INSTALLDIR)/usr/bin
-	for app in $(wildcard matrix*); do \
-	  install --mode=755 $$app/$$app $(INSTALLDIR)/usr/bin; \
+	for demo_folder in $(wildcard matrix*); do \
+		cd $$demo_folder; \
+		install --mode=755 matrix* $(INSTALLDIR)/usr/bin; \
+		cd ..;\
 	done;  
 	
 .PHONY: $(PHONY) install clean distclean
