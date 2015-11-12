@@ -23,13 +23,12 @@ int showIP(int devFD, char *netDev)
     struct sockaddr_in *sin;
     struct ifreq ifr;
     socketFD = socket(AF_INET, SOCK_DGRAM, 0); 
-    if(socketFD ==-1) {
-        perror("socket error!\n");
+    if(socketFD == -1) {
+        printf("socket error\n");
         return -1;
     }
     strcpy(ifr.ifr_name, netDev);
     if(ioctl(socketFD, SIOCGIFADDR, &ifr) < 0) {
-        perror("ioctl error\n");
         return -1;
     } else {
         sin = (struct sockaddr_in *)&(ifr.ifr_addr);
@@ -42,12 +41,13 @@ int main(int argc, char ** argv)
 {
     int devFD;
     int keyValue = 0;
+    int lastKeyValue = -1;
     int showDefault = 1;
     int needClear = 1;
     time_t lt;
     char curTime[TIME_STR_BUFSIZE];
     char preTime[TIME_STR_BUFSIZE];
-    
+
     if ((devFD = LCD1602KeyInit()) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
@@ -57,13 +57,25 @@ int main(int argc, char ** argv)
 
     while (1) {
         keyValue = LCD1602GetKey(devFD);
+        if (keyValue != lastKeyValue) {
+            lastKeyValue = keyValue;
+        } else if (showDefault != 1){
+            usleep(1000);
+            continue;
+        }
         switch (keyValue) {
         // F1
         case 0x1e:
             showDefault = 0;
             LCD1602KeyClear(devFD);
             LCD1602KeyDispStr(devFD, 0, 0, "#F1-IP address");
-            showIP(devFD, "usb0");
+            if (showIP(devFD, "eth0")) {
+            	if (showIP(devFD, "wlan0")) {
+                	if (showIP(devFD, "usb0")) {
+                	    showIP(devFD, "lo");
+                	}
+                }
+            }
             break;
             // F2    
         case 0x1d:
