@@ -60,18 +60,6 @@ static int isPinValid(int pin)
     if (pin == GPIO_PIN11) {
         return 1;
     }
-    if (pin == GPIO_PIN12) {
-        return 1;
-    }
-    if (pin == GPIO_PIN13) {
-        return 1;
-    }
-    if (pin == GPIO_PIN14) {
-        return 1;
-    }
-    if (pin == GPIO_PIN15) {
-        return 1;
-    }
     return 0;
 }
 
