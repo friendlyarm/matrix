@@ -2,7 +2,7 @@
 #include "libfahw-gpio.h"
 
 #define GPIO_FILENAME_DEFINE(pin,field) char fileName[255] = {0}; \
-        sprintf(fileName, "/sys/devices/virtual/gpio/gpio%d/%s", pin, field);
+        sprintf(fileName, "/sys/class/gpio/gpio%d/%s", pin, field);
 
 /*
 pin:
