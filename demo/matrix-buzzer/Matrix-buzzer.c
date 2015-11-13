@@ -17,15 +17,18 @@ int parseCmd(int argc, char **argv, int *pin, int *Hz, int *duty)
     }
     switch(num) {
     case 0:
-        *pin = PWM_PIN1; 
+        *pin = PWM0; 
         break;
     case 1:
-        *pin = PWM_PIN2;
+        *pin = PWM1;
         break;
+    case 2:
+        *pin = PWM2;
+        break;    
     default:
         printf("Unsupported pin PWM%d\n", num);
         num = 0;
-        *pin = PWM_PIN1;
+        *pin = PWM0;
     }
     *Hz = hz;
     *duty = dt;
@@ -35,7 +38,7 @@ int parseCmd(int argc, char **argv, int *pin, int *Hz, int *duty)
 
 int main(int argc, char ** argv)
 {
-    int pin = PWM_PIN1;
+    int pin = PWM0;
     int Hz;
     int duty;
     
@@ -46,7 +49,7 @@ int main(int argc, char ** argv)
     } else {
         Hz = 1000;
         duty = 500;
-        printf("Usage:%s PWM[0~1] freq duty[0~1000]\n", argv[0]);
+        printf("Usage:%s PWM[0~2] freq duty[0~1000]\n", argv[0]);
         printf("Using default config: pin=PWM0 freq=%dHz duty=%d\n", Hz, duty);
     }
     
