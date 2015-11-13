@@ -5,7 +5,7 @@
 #include "libfahw.h"
 
 #define SW_TRIGGER          (5)
-#define PS2_READ_TIMES      (10)
+#define PS2_READ_TIMES      (1000)
 
 static int devFD;
 void PS2Handler(int signNum)
@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
 			z = 1;
 		}
 		printf("X=%3d Y=%3d Z=%d\n", x, y, z);
-		sleep(1);
+		usleep(10000);
 	}
 	pcf8591DeInit(devFD);
 	return 0;
