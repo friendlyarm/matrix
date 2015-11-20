@@ -131,37 +131,6 @@ static int readTemp(const char* filename, int* ok)
     return result;
 }
 
-EXPORT int ds18b20Init(int pin) 
-{
-    int dsPin = pin;
-    clearLastError();
-    int devFD = openHW(DS18B20_DEV, O_RDONLY);
-    if (devFD == -1) {
-        setLastError("Fail to open ds18b20");
-        return -1;
-    }
-    if(ioctl(devFD, SET_W1GPIO_PIN, &dsPin) == -1) {
-        setLastError("Fail to set ds18b20 pin");
-        closeHW(devFD);
-        return -1;
-    }
-    
-    dsPin = -1;
-    if(ioctl(devFD, GET_W1GPIO_PIN, &dsPin) == -1) {
-        setLastError("Fail to get ds18b20 pin");
-        closeHW(devFD);
-        return -1;
-    }
-    if (dsPin != pin) {
-        setLastError("Get error ds18b20 pin %d", dsPin);
-        closeHW(devFD);
-        return -1;
-    }
-    // wait for w1 init
-    sleep(1);
-    return devFD;    
-}
-
 EXPORT int ds18b20Read(char * temperature) 
 {
     DIR *d;
@@ -198,13 +167,4 @@ EXPORT int ds18b20Read(char * temperature)
     }
     int retSize = strlen(pRetData);
     return retSize;
-}
-
-EXPORT void ds18b20DeInit(int devFD) 
-{
-    clearLastError();
-    if(ioctl(devFD, UNSET_W1GPIO_PIN, 0) == -1) {
-        setLastError("Fail to unset ds18b20 pin\n");
-    }    
-    closeHW(devFD);
 }
