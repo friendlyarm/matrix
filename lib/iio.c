@@ -1,62 +1,43 @@
+#include <sys/types.h>
+#include <dirent.h>
 #include "common.h"
 #include "libfahw-iio.h"
 #include "libfahw-filectl.h"
-
-EXPORT int dht11Init(int pin) 
-{
-    int dht11Pin = pin;
-    clearLastError();
-    int devFD = openHW(DHT11_DEV, O_RDONLY);
-    if (devFD == -1) {
-        printf("Fail to open dht11");
-        return -1;
-    }
-    if(ioctl(devFD, SET_DHT11_PIN, &dht11Pin) == -1) {
-        setLastError("Fail to set dht11 pin");
-        closeHW(devFD);
-        return -1;
-    }
-    
-    dht11Pin = -1;
-    if(ioctl(devFD, GET_DHT11_PIN, &dht11Pin) == -1) {
-        setLastError("Fail to get dht11 pin");
-        closeHW(devFD);
-        return -1;
-    }
-    if (dht11Pin != pin) {
-        setLastError("Get error dht11 pin %d", dht11Pin);
-        closeHW(devFD);
-        return -1;
-    }
-    
-    return devFD;
-}
-
-EXPORT void dht11DeInit(int devFD) 
-{
-    clearLastError();
-    if(ioctl(devFD, UNSET_DHT11_PIN, 0) == -1) {
-        setLastError("Fail to unset dht11 pin\n");
-    }    
-    closeHW(devFD);
-}
 
 EXPORT int dht11Read(int type, int *data) 
 {
     clearLastError();
     int ret = -1;
+    DIR *d;
+    struct dirent *de;
     char *dht11Path = (char *) malloc(FILE_PATH_LENGTH);
-    memset(dht11Path, 0, FILE_PATH_LENGTH);
-    strcpy(dht11Path, DHT11_PATH);
+    
+    if (!(d = opendir(DHT11_SYS_PATH))) {
+        setLastError("Fail to opendir %s", DHT11_SYS_PATH);
+        return 0;
+    }
+    char dht11File[FILE_PATH_LENGTH];
+    while ((de = readdir(d))) {
+        if (de->d_name[0] == '.')
+            continue;
+        
+        if (type == DHT_HUMIDITY)
+            sprintf(dht11File, "%s%s/in_humidityrelative_input", DHT11_SYS_PATH, de->d_name);
+        else if(type == DHT_TEMP)
+            sprintf(dht11File, "%s%s/in_temp_input", DHT11_SYS_PATH, de->d_name);
+        
+        if (access(dht11File, F_OK) != -1) {
+            break;
+        }
+    }
+    closedir(d);
 
     switch(type) {
     case DHT_TEMP:
-        strcat(dht11Path, "in_temp_input");
-        ret = readIntValueFromFile(dht11Path);
+        ret = readIntValueFromFile(dht11File);
         break;
     case DHT_HUMIDITY:
-        strcat(dht11Path, "in_humidityrelative_input");
-        ret = readIntValueFromFile(dht11Path);
+        ret = readIntValueFromFile(dht11File);
         break;
     default:
         setLastError("Unsupport dht11 data type %d", type);
@@ -73,7 +54,8 @@ EXPORT int dht11Read(int type, int *data)
     return ret;
 }
 
-static int Hcsr04Write(char* fileName, char* buff) {
+static int Hcsr04Write(char* fileName, char* buff) 
+{
     FILE *fp = fopen(fileName,"w");
     if (fp == NULL) {
         setLastError("Unable to open file %s",fileName);
@@ -97,13 +79,11 @@ EXPORT int Hcsr04Init(int Pin)
     strcpy(hcsr04Path, HCSR04_PATH);
 
     res.Pin = Pin;
-    
     char *resStr = (char *)&res;    
     if (Hcsr04Write(hcsr04Path, resStr) == -1) {
         setLastError("Fail to write resource to hcsr04");
         ret = -1;
     }
-        
     free(hcsr04Path);
     return ret;
 }
