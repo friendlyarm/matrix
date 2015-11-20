@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-static const char default_rtc[] = "/dev/rtc0";
+static const char default_rtc[] = "/dev/rtc1";
 static const char default_date_time[] = "2015 9 15 1 1 1";
 int main(int argc, char **argv)
 {
