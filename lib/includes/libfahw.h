@@ -14,6 +14,7 @@
 #include "libfahw-pwm.h"
 #include "libfahw-mcp23017.h"
 #include "libfahw-bmp180.h"
+#include "libfahw-encoder.h"
 
 int getLastError(char* dest, int maxlen);
 
