@@ -14,12 +14,14 @@ int main(void)
     int retSize = -1;
     char value[ARRAY_SIZE(sound)];
     int devFD = -1;
+
+    printf("Using pin GPIO_PIN1\n");
     if ((devFD =sensorInit(sound, ARRAY_SIZE(sound))) == -1) {
         printf("Fail to init sensor\n");
         return -1;
     }
-
-    if (( retSize = sensorRead(devFD, value, ARRAY_SIZE(sound)) ) == -1) {
+    printf("Please speak...\n");
+    if ((retSize = sensorRead(devFD, value, ARRAY_SIZE(sound))) == -1) {
         printf("Fail to read sensors\n");
     }
     if (retSize > 0) {
