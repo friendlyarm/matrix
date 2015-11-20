@@ -10,7 +10,6 @@ EXPORT int dht11Read(int type, int *data)
     int ret = -1;
     DIR *d;
     struct dirent *de;
-    char *dht11Path = (char *) malloc(FILE_PATH_LENGTH);
     
     if (!(d = opendir(DHT11_SYS_PATH))) {
         setLastError("Fail to opendir %s", DHT11_SYS_PATH);
@@ -50,7 +49,6 @@ EXPORT int dht11Read(int type, int *data)
         setLastError("Invalid dht11 data");
     }
 
-    free(dht11Path);
     return ret;
 }
 

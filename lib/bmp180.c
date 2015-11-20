@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "common.h"
 #include "libfahw-bmp180.h"
 
@@ -7,18 +9,35 @@ EXPORT int bmp180Read(int type, int *data)
 {
     clearLastError();
     int ret = -1;
-    char *bmp180Path = (char *) malloc(FILE_PATH_LENGTH);
-    memset(bmp180Path, 0, FILE_PATH_LENGTH);
-    strcpy(bmp180Path, BMP180_PATH);
-
+    DIR *d;
+    struct dirent *de;
+    
+    if (!(d = opendir(BMP180_SYS_PATH))) {
+        setLastError("Fail to opendir %s", BMP180_SYS_PATH);
+        return 0;
+    }
+    char bmpFile[FILE_PATH_LENGTH];
+    while ((de = readdir(d))) {
+        if (de->d_name[0] == '.')
+            continue;
+        
+        if (type == BMP180_TEMP)
+            sprintf(bmpFile, "%s%s/temp0_input", BMP180_SYS_PATH, de->d_name);
+        else if(type == BMP180_PRESSURE)
+            sprintf(bmpFile, "%s%s/pressure0_input", BMP180_SYS_PATH, de->d_name);
+        
+        if (access(bmpFile, F_OK) != -1) {
+            break;
+        }
+    }
+    closedir(d);
+    
     switch(type) {
     case BMP180_TEMP:
-        strcat(bmp180Path, "temp0_input");
-        ret = readIntValueFromFile(bmp180Path);
+        ret = readIntValueFromFile(bmpFile);
         break;
     case BMP180_PRESSURE:
-        strcat(bmp180Path, "pressure0_input");
-        ret = readIntValueFromFile(bmp180Path);
+        ret = readIntValueFromFile(bmpFile);
         break;
     default:
         setLastError("Unsupport bmp180 data type %d", type);
@@ -30,7 +49,6 @@ EXPORT int bmp180Read(int type, int *data)
     } else {
         setLastError("Invalid bmp180 data");
     }
-
-    free(bmp180Path);
+    
     return ret;
 }
