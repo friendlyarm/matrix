@@ -1,33 +1,28 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 #include "libfahw.h"
+
+#define BUF_SIZE    (32)
+#define ADC_READ_TIMES (1000)
 
 int main(int argc, char ** argv)
 {
-    int devFD;
-    int data, channel, mode;
+    int i = 0;
+    int value = 0;
+    int channel = 0;
 
-    if ((devFD = pcf8591Init()) == -1) {
-        printf("Fail to init pcf8591\n");
-        return -1;
-    }
-
-    if (pcf8591SetCtrl(devFD, PCF8591_INIT_AD_CONTROL) == -1) {
-        printf("Fail to Set pcf8591 control AD\n");
-        pcf8591DeInit(devFD);
-        return -1;
+    if (argc == 2) {
+        channel = atoi(argv[1]);
     }
     
-    mode = 0;
-    printf("pcf8591 working as AD in mode%d\n",mode);
-    for (channel = PCF8591_AIN_CHANNEL0; channel <= PCF8591_AIN_CHANNEL3; channel++) {
-        data = pcf8591Read(devFD, mode, channel);
-        printf("Channel%d's value: %d\n",channel,data);
+    for (i=0; i<ADC_READ_TIMES; i++) {
+        if (pcf8591Read(channel, &value) != -1) {
+            printf("channel%d value=%d\n", channel, value);
+        } else {
+            printf("Fail to get channel%d value\n", channel);        
+        }
+        usleep(10000);
     }
-    
-    pcf8591DeInit(devFD);
     return 0;
 }
