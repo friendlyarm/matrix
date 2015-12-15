@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "libfahw.h"
 
 static struct sensor button[] = {
         {
-                GPIO_PIN1,
+                GPIO_PIN(7),
                 IRQ_TYPE_EDGE_FALLING,
         }
 };
@@ -15,7 +16,11 @@ int main(int argc, char ** argv)
     char value[ARRAY_SIZE(button)];
     int devFD = -1;
 
-    printf("Using pin GPIO_PIN1\n");
+    if (argc == 2) {
+        button[0].pin = atoi(argv[1]);
+    }
+    
+    printf("Using GPIO_PIN(%d)\n", button[0].pin);
     if ((devFD =sensorInit(button, ARRAY_SIZE(button))) == -1) {
         printf("Fail to init sensor\n");
         return -1;

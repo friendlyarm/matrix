@@ -15,7 +15,7 @@ int dht11Read(int type, int *data);
 #define HCSR04_MAX_DISTANCE     (200000)
 #define HCSR04_PER_METRE        (58)
 struct HCSR04_resource {
-    int Pin;
+    int gpio;
 };
 
 int Hcsr04Init(int echoPin);

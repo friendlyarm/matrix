@@ -2,6 +2,7 @@
 #include <dirent.h>
 #include "common.h"
 #include "libfahw-iio.h"
+#include "libfahw-gpio.h"
 #include "libfahw-filectl.h"
 
 EXPORT int dht11Read(int type, int *data) 
@@ -76,7 +77,7 @@ EXPORT int Hcsr04Init(int Pin)
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);
     strcpy(hcsr04Path, HCSR04_PATH);
 
-    res.Pin = Pin;
+    res.gpio = pintoGPIO(Pin);
     char *resStr = (char *)&res;    
     if (Hcsr04Write(hcsr04Path, resStr) == -1) {
         setLastError("Fail to write resource to hcsr04");
@@ -90,7 +91,7 @@ EXPORT void Hcsr04DeInit()
 {
     clearLastError();
     struct HCSR04_resource res;
-    res.Pin = -1;
+    res.gpio = -1;
 
     char *hcsr04Path = (char *) malloc(FILE_PATH_LENGTH);
     memset(hcsr04Path, 0, FILE_PATH_LENGTH);

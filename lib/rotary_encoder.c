@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "common.h"
+#include "libfahw-gpio.h"
 #include "libfahw-encoder.h"
 
 EXPORT int rotaryEncoderInit(int swPin, int siaPin, int sibPin) 
@@ -8,7 +9,7 @@ EXPORT int rotaryEncoderInit(int swPin, int siaPin, int sibPin)
     clearLastError();
     char buf[32];
     
-    sprintf(buf,"%d,%d,%d\n", swPin, siaPin, sibPin);
+    sprintf(buf,"%d,%d,%d\n", pintoGPIO(swPin), pintoGPIO(siaPin), pintoGPIO(sibPin));
     if (writeValueToFile(ENCODER_PATH"gpio", buf)) {
         setLastError("Fail to set pin for rotary encoder");
         return -1;

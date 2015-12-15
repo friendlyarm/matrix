@@ -5,8 +5,7 @@
 int main(int argc, char ** argv)
 {
     int distance = -1;
-
-    int pin = GPIO_PIN1;
+    int pin = GPIO_PIN(7);
 
     if (Hcsr04Init(pin) == -1) {
         printf("Fail to init hcsr04\n");

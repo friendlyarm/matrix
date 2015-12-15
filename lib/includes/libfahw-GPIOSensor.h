@@ -10,7 +10,7 @@
 #define IRQ_TYPE_EDGE_BOTH          (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING)
 
 struct sensor {
-    int gpio;
+    int pin;
     int intType;
 };
 #define ARRAY_SIZE(a)               (sizeof(a) / sizeof((a)[0]))

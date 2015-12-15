@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libfahw-gpio.h"
 #include "libfahw-GPIOSensor.h"
 
 static int sensor_num = -1;
@@ -17,6 +18,10 @@ EXPORT int sensorInit(struct sensor *dev, int num) {
 
     for(i=0; i<num; i++)
     {
+        dev[i].pin = pintoGPIO(dev[i].pin);
+        if (dev[i].pin == -1) {
+            return -1;
+        }
         if(ioctl(devFD, ADD_SENSOR, &dev[i]) == -1) {
             setLastError("Fail to add sensor");
         }

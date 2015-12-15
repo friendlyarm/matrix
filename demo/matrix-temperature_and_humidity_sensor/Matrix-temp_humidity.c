@@ -8,7 +8,6 @@ int main(int argc, char ** argv)
     int dhtTemp = 0;
     int dhtHdty = 0;
 
-    printf("Using pin GPIO_PIN1\n");
     if ((ret = dht11Read(DHT_HUMIDITY, &dhtHdty)) != -1) {
         printf("Get humidity : %d\n", dhtHdty);
     } else {

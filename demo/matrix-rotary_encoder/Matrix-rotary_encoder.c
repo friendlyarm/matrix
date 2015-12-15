@@ -22,9 +22,9 @@ int main(int argc, char ** argv)
     int i = 0;
     int encoderSw = 0;
     int encoderValue = 0;
-    int swPin = GPIO_PIN1;
-    int siaPin = GPIO_PIN2;
-    int sibPin = GPIO_PIN3;
+    int swPin = GPIO_PIN(7);
+    int siaPin = GPIO_PIN(11);
+    int sibPin = GPIO_PIN(12);
 
     if (rotaryEncoderInit(swPin, siaPin, sibPin)) {
         printf("Fail to init rotary encoder\n");
