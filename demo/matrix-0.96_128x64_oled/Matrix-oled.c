@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]) 
 {
     int devFD;
-    if ((devFD = OLEDInit(GPIO_PIN(3), GPIO_PIN(5))) == -1) {
+    if ((devFD = OLEDInit(GPIO_PIN(7), GPIO_PIN(11))) == -1) {
         printf("Fail to init OLED\n");
         return -1;
     }

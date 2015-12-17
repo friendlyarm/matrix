@@ -201,7 +201,7 @@ static int OLEDSPIInit(int devFD)
     return 0;
 }
 
-EXPORT int OLEDInit(int resetPin, int cmdDatPin) 
+EXPORT int OLEDInit(int cmdDatPin, int resetPin) 
 {
     clearLastError();
     int ret = 0;
