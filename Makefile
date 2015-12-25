@@ -1,4 +1,4 @@
-CROSS_COMPILE =
+CROSS_COMPILE ?=
 ifeq ($(CROSS_COMPILE),)
 $(error "Not set CROSS_COMPILE=";)
 endif
