@@ -11,7 +11,7 @@
 void encoderHandler(int signNum)
 {
     if (signNum == SIGINT) {
-        printf("Quit reading PS2 rocker\n");
+        printf("Quit reading rotary encoder\n");
         rotaryEncoderDeInit();
     }
     exit(0);

@@ -1,1 +1,3 @@
-lib/*
+/lib
+/bcmdhd.ko
+/scsi_wait_scan.ko

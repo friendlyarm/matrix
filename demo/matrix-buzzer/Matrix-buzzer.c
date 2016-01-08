@@ -55,6 +55,7 @@ int main(int argc, char ** argv)
     
     if (PWMPlay(pin, Hz, duty) == -1) {
         printf("Fail to output PWM\n");
+        return -1;
     }  
     printf("Press enter to stop PWM\n");
     getchar();

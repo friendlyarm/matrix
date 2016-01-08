@@ -21,9 +21,10 @@ int main(int argc, char ** argv)
         if (pcf8591Read(channel, &value) != -1) {
             printf("channel%d value=%d\n", channel, value);
         } else {
-            printf("Fail to get channel%d value\n", channel);        
+            printf("Fail to get channel%d value\n", channel);
+            return -1;
         }
-        usleep(10000);
+        sleep(1);
     }
     return 0;
 }
