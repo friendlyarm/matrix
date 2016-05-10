@@ -18,7 +18,7 @@ install:
 	mkdir -p $(INSTALLDIR)/usr/bin
 	for demo_folder in $(wildcard matrix*); do \
 		cd $$demo_folder; \
-		install --mode=755 matrix* $(INSTALLDIR)/usr/bin; \
+		install --mode=755 matrix* /usr/bin; \
 		cd ..;\
 	done;  
 	

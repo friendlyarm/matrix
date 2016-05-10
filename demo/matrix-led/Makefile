@@ -1,5 +1,4 @@
-CROSS_COMPILE ?= arm-linux-gnueabihf-
-CC = $(CROSS_COMPILE)gcc 
+CC = gcc 
 
 TARGET	=  $(patsubst Matrix-%.c,matrix-%, $(wildcard *.c))
 SRC 	=  $(wildcard *.c)

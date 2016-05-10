@@ -1,7 +1,5 @@
 CROSS_COMPILE ?=
-ifeq ($(CROSS_COMPILE),)
-$(error "Not set CROSS_COMPILE=";)
-endif
+
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
 CC		= $(CROSS_COMPILE)gcc
@@ -41,10 +39,8 @@ $(SLIB): $(LIBOBJ)
 	$(RANLIB) $@
 	
 install: $(LIB)
-	mkdir -p $(INSTALLDIR)/include
-	mkdir -p $(INSTALLDIR)/lib
-	install ./includes/libfahw*.h $(INSTALLDIR)/include
-	install --mode=644 libfahw.so $(INSTALLDIR)/lib
-	install --mode=644 libfahw.a $(INSTALLDIR)/lib
+	install ./includes/libfahw*.h /usr/include
+	install --mode=644 libfahw.so /usr/lib
+	install --mode=644 libfahw.a /usr/lib
 clean:
 	rm -rf $(LIB) $(LIBOBJ) $(SLIB) $(DEPS) $(OBJDIR) $(DEPDIR)
