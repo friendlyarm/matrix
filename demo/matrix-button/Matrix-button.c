@@ -20,6 +20,7 @@ int main(int argc, char ** argv)
         button[0].pin = atoi(argv[1]);
     }
     
+    boardInit();
     printf("Using GPIO_PIN(%d)\n", button[0].pin);
     if ((devFD =sensorInit(button, ARRAY_SIZE(button))) == -1) {
         printf("Fail to init sensor\n");

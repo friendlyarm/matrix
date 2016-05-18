@@ -23,8 +23,10 @@
 #include <stdio.h>
 #include <pthread.h>
 
+extern int boardInit();
 extern void clearLastError();
 extern void setLastError(const char *fmt, ...);
+extern int getLastError(char* dest, int maxlen);
 
 #define EXPORT
 extern int writeValueToFile(char* fileName, char* buff);
@@ -33,5 +35,9 @@ extern int readValueFromFile(char* fileName, char* buff, int len);
 extern int readIntValueFromFile(char* fileName);
 
 #define FILE_PATH_LENGTH           (128)
+#define BOARD_MINI6410             (6410)
+#define BOARD_MINI210              (210)
+#define BOARD_TINY4412             (4412)
+#define BOARD_NANOPI_M1            (1)
 
 #endif

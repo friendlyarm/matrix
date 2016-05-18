@@ -19,7 +19,6 @@ EXPORT int pcf8591Read(int channel, int *value)
     while ((de = readdir(d))) {
         if (de->d_name[0] == '.')
             continue;
-
         sprintf(pcfFile, "%s%s/in%d_input", PCF8591_SYS_PATH, de->d_name, channel);
         if (access(pcfFile, F_OK) != -1) {
             existFlag = 1;

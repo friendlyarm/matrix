@@ -19,6 +19,7 @@
 #define GPIO_FILENAME_DEFINE(pin,field) char fileName[255] = {0}; \
         sprintf(fileName, "/sys/class/gpio/gpio%d/%s", pin, field);
 
+void initPinGPIO(int board);
 int pintoGPIO(int pin);
 int exportGPIOPin(int pin);
 int unexportGPIOPin(int pin);

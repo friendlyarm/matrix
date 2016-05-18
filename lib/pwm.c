@@ -2,12 +2,42 @@
 #include "libfahw-filectl.h"
 #include "libfahw-pwm.h"
 
-EXPORT int PWMPlay(int pin, int freq, int duty) 
+static int pwmGPIO[3] = {-1, -1, -1};
+static int pwmNum = -1;
+void initPwmGPIO(int board)
+{
+    clearLastError();
+    memset(pwmGPIO, -1, sizeof(pwmGPIO));
+    switch(board) {
+    case BOARD_NANOPI_M1: {
+        int buf[2] = {5, 6};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 2;
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+EXPORT int pwmtoGPIO(int pwm)
+{
+    clearLastError();
+
+    if (pwm<0 || pwm>=pwmNum || pwmGPIO[pwm]==-1) {
+        setLastError("invalid pwm %d", pwm);
+        return -1;
+    }
+    return pwmGPIO[pwm];
+}
+
+EXPORT int PWMPlay(int pwm, int freq, int duty) 
 {
     clearLastError();
     int arg[3];
     int devFD = -1;
-    arg[0] = pin;
+    int gpio = pwmtoGPIO(pwm);
+    arg[0] = gpio;
     arg[1] = freq;
     arg[2] = duty;
 
@@ -30,18 +60,19 @@ EXPORT int PWMPlay(int pin, int freq, int duty)
     return 0;
 }
 
-EXPORT int PWMStop(int pin) 
+EXPORT int PWMStop(int pwm) 
 {
     clearLastError();
     int devFD = -1;
-
+    int gpio = pwmtoGPIO(pwm);
+    
     if ((devFD = openHW("/dev/pwm", O_RDONLY)) == -1) {
         setLastError("Fail to open pwm device");
         return -1;
     }
 
-    if (ioctl(devFD, PWM_IOCTL_STOP, &pin) == -1) {
-        setLastError("Fail to stop pwm");
+    if (ioctl(devFD, PWM_IOCTL_STOP, &gpio) == -1) {
+        setLastError("Fail to stop pwm %d", pwm);
         closeHW(devFD);
         return -1;
     }

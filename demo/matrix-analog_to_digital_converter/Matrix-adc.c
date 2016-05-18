@@ -17,6 +17,7 @@ int main(int argc, char ** argv)
         channel = atoi(argv[1]);
     }
     
+    boardInit();
     for (i=0; i<ADC_READ_TIMES; i++) {
         if (pcf8591Read(channel, &value) != -1) {
             printf("channel%d value=%d\n", channel, value);

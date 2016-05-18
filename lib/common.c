@@ -1,7 +1,10 @@
 #define _GNU_SOURCE
 #include "common.h"
+#include "libfahw.h"
 
-int writeValueToFile(char* fileName, char* buff) {
+int writeValueToFile(char* fileName, char* buff) 
+{
+    clearLastError();
     FILE *fp = fopen(fileName,"w");
     if (fp == NULL) {
         setLastError("Unable to open file %s",fileName);
@@ -14,14 +17,18 @@ int writeValueToFile(char* fileName, char* buff) {
 }
 
 
-int writeIntValueToFile(char* fileName, int value) {
+int writeIntValueToFile(char* fileName, int value) 
+{
+    clearLastError();
     char buff[50];
     sprintf(buff, "%d", value);
     return writeValueToFile(fileName, buff);
 }
 
 
-int readValueFromFile(char* fileName, char* buff, int len) {
+int readValueFromFile(char* fileName, char* buff, int len) 
+{
+    clearLastError();
     int ret = -1;
     FILE *fp = fopen(fileName,"r");
     if (fp == NULL) {
@@ -37,7 +44,9 @@ int readValueFromFile(char* fileName, char* buff, int len) {
 }
 
 
-int readIntValueFromFile(char* fileName) {
+int readIntValueFromFile(char* fileName) 
+{
+    clearLastError();
     char buff[255];
     memset(buff, 0, sizeof(buff));
     int ret = readValueFromFile(fileName, buff, sizeof(buff)-1);
@@ -49,6 +58,7 @@ int readIntValueFromFile(char* fileName) {
 
 static char* getBoardInfo()
 {
+    clearLastError();
     int n,i,j;
     char lineUntrim[1024], line[1024],*p;
     FILE *f;
@@ -90,31 +100,51 @@ static char* getBoardInfo()
     return 0;
 }
 
-int getBoardType() {
-    
+static int getBoardType() 
+{    
+    clearLastError();
     int ret = -1;
-    
     char* boardType = getBoardInfo();
     if (strncasecmp(boardType, "MINI6410", 8)==0) {
-        ret = 6410;
+        ret = BOARD_MINI6410;
     } else if (strncasecmp(boardType, "MINI210", 7)==0) {
-        ret = 210;
+        ret = BOARD_MINI210;
     } else if (strncasecmp(boardType, "TINY4412", 8)==0) {
-        ret = 4412;
+        ret = BOARD_TINY4412;
+    } else if (strncasecmp(boardType, "sun8i", 5)==0) {
+        ret = BOARD_NANOPI_M1;
     }
     
     return ret;
 }
 
+EXPORT int boardInit()
+{
+    clearLastError();
+    int board = getBoardType();
+    switch(board) {
+    case BOARD_NANOPI_M1:
+        initPinGPIO(board);
+        initPwmGPIO(board);
+        break;
+    default:
+        setLastError("unsupported board");
+        return -1;
+    }
+    return board;
+}
+
 static char FAHWLastError[255];
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-void clearLastError() {
+EXPORT void clearLastError() 
+{
     pthread_mutex_lock(&mutex);
     memset(FAHWLastError, 0, sizeof(FAHWLastError));
     pthread_mutex_unlock(&mutex);
 }
 
-void setLastError(const char *fmt, ...) {
+EXPORT void setLastError(const char *fmt, ...) 
+{
     va_list vl;
     va_start(vl, fmt);
     char* errMsg;
@@ -128,7 +158,8 @@ void setLastError(const char *fmt, ...) {
     va_end(vl);
 }
 
-EXPORT int getLastError(char* dest, int maxlen) {
+EXPORT int getLastError(char* dest, int maxlen) 
+{
     if (dest == NULL || maxlen<=0) {
         return -1;
     }
@@ -140,8 +171,8 @@ EXPORT int getLastError(char* dest, int maxlen) {
     return ret;
 }
 
-int Test() {
+int Test() 
+{
     setLastError("TestFunction");
     return 999;
 }
-

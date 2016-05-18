@@ -1,12 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "libfahw.h"
 
 int main(int argc, char ** argv)
 {
     int devFD;
     double angle;
-
-    if ((devFD = hmc5883Init()) == -1) {
+    int i2cDev = 0;
+    
+    if (argc == 2) {
+        i2cDev = atoi(argv[1]);
+    }
+    
+    boardInit();
+    if ((devFD = hmc5883Init(i2cDev)) == -1) {
         printf("Fail to init hmc5883\n");
         return -1;
     }

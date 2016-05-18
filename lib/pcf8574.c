@@ -85,11 +85,14 @@ EXPORT int pcf8574WriteData8(int devFD, unsigned char data)
     return 0;
 }
 
-EXPORT int pcf8574Init() 
+EXPORT int pcf8574Init(int i2cDev) 
 {
     clearLastError();
     int devFD;
-    if ((devFD = openHW(I2C0_PATH, O_RDWR)) < 0) {
+    char buf[16];
+    memset(buf, 0, sizeof(buf));
+    sprintf(buf, "/dev/i2c-%d", i2cDev);
+    if ((devFD = openHW(buf, O_RDWR)) < 0) {
         setLastError("Fail to open I2C device pcf8574");
         return -1;
     } else {
@@ -159,11 +162,11 @@ EXPORT int LCD1602DispLines(int devFD, char* line1, char* line2) {
     return ret;
 }
 
-EXPORT int LCD1602Init()
+EXPORT int LCD1602Init(int i2cDev)
 {
     clearLastError();
     int devFD;
-    if ((devFD = pcf8574Init()) == -1) {
+    if ((devFD = pcf8574Init(i2cDev)) == -1) {
         setLastError("Fail to init pcf8574");
         return -1;
     }

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "libfahw.h"
 
 static const char default_rtc[] = "/dev/rtc1";
 static const char default_date_time[] = "2015 9 15 1 1 1";
@@ -29,8 +30,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    boardInit();
     fd = open(rtc, O_RDONLY);
-
     if (fd ==  -1) {
         perror(rtc);
         exit(errno);

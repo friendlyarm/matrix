@@ -26,6 +26,7 @@ int main(int argc, char ** argv)
     int siaPin = GPIO_PIN(11);
     int sibPin = GPIO_PIN(12);
 
+    boardInit();
     if (rotaryEncoderInit(swPin, siaPin, sibPin)) {
         printf("Fail to init rotary encoder\n");
         return -1;

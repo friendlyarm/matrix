@@ -3,14 +3,14 @@
 
 #define     MCP23017_ADDRESS         (0x27)    
 
-int mcpInit();
+int mcpInit(int i2cDev);
 int mcpWriteData8(int devFD, unsigned char data);
 int mcpWriteData4(int devFD, unsigned char data);
 int mcpWriteCmd8(int devFD, unsigned char command);
 int mcpWriteCmd4(int devFD, unsigned char command);
 void mcpDeInit(int devFD);
 
-int LCD1602KeyInit();
+int LCD1602KeyInit(int i2cDev);
 int LCD1602KeyClear(int devFD);
 int LCD1602KeyDispChar(int devFD, unsigned char x, unsigned char y, unsigned char data);
 int LCD1602KeyDispStr(int devFD, unsigned char x, unsigned char y, char *str);

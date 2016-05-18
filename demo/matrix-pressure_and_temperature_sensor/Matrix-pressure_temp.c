@@ -11,6 +11,7 @@ int main(int argc, char ** argv)
     int bmpPressure = 0;
     float altitude = 0;
     
+    boardInit();
     if ((ret = bmp180Read(BMP180_TEMP, &bmpTemp)) != -1) {
         printf("Get temperature : %.1f C\n", (float)bmpTemp / 10);
     } else {

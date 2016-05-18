@@ -64,11 +64,14 @@ EXPORT double hmc5883Read(int devFD)
 
 }
 
-EXPORT int hmc5883Init() 
+EXPORT int hmc5883Init(int i2cDev) 
 {
     clearLastError();
     int devFD;
-    if ((devFD = openHW(I2C0_PATH, O_RDWR)) < 0) {
+    char buf[16];
+    memset(buf, 0, sizeof(buf));
+    sprintf(buf, "/dev/i2c-%d", i2cDev);
+    if ((devFD = openHW(buf, O_RDWR)) < 0) {
         setLastError("Fail to open I2C hmc5883 device");
         return -1;
     } else {

@@ -8,6 +8,8 @@
 int main(int argc, char ** argv)
 {
     char temperature[BUF_SIZE];
+    
+    boardInit();
     memset(temperature, 0, BUF_SIZE);
     if (ds18b20Read(temperature) > 0) {
         printf("Temperature = %.3f C\n", atoi(temperature)/1000.0);

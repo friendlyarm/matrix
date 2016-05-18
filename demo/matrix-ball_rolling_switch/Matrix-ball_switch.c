@@ -21,6 +21,7 @@ int main(int argc, char ** argv)
     }
     
     printf("Using GPIO_PIN(%d)\n", brSwitch[0].pin);
+    boardInit();
     if ((devFD =sensorInit(brSwitch, ARRAY_SIZE(brSwitch))) == -1) {
         printf("Fail to init sensor\n");
         return -1;

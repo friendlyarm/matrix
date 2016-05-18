@@ -10,7 +10,4 @@ int I2CWriteByteTo(int fd, int pos, unsigned char byteData, int wait_ms);
 int I2CReadByteFrom(int fd, int pos, int wait_ms);
 int I2CWriteByte(int fd, unsigned char byteData, int wait_ms);
 int I2CReadByte(int fd, int wait_ms);
-
-#define I2C0_PATH "/dev/i2c-0"
-
 #endif

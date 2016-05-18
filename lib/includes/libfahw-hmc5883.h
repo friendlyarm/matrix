@@ -7,7 +7,7 @@
 #define PI                (3.14159265)
 
 double hmc5883Read(int devFD);
-int hmc5883Init();
+int hmc5883Init(int i2cDev);
 void hmc5883DeInit(int devFD);
 
 #endif

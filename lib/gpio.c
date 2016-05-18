@@ -7,6 +7,25 @@ static int pinGPIO[41] = {-1, -1, -1, 99, -1, 98, -1,  60, 117, -1, 113,
                               73, 92, 74, -1, 76, 71,  75, 162, -1, 163,
                           };
 
+void initPinGPIO(int board)
+{
+    clearLastError();
+    switch(board) {
+    case BOARD_NANOPI_M1: {
+        // i2c & spi do not use as gpio
+        int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1, -1, 203, 198, -1, 199,
+                                   0, 6, 2, -1, 3, 200,  -1, 201, -1, -1,
+                                   -1, 1, -1, -1, -1, -1, -1, -1, 20, -1,
+                                   21, 7, 8, -1, -1, -1, 9, -1, -1, -1,
+                                  };
+        memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 EXPORT int pintoGPIO(int pin)
 {
     clearLastError();

@@ -14,6 +14,7 @@ int main(int argc, char ** argv)
 
     int pin = GPIO_PIN(7);
     int ret = -1;
+    boardInit();
     if ((ret = exportGPIOPin(pin)) != 0) {	
         printf("exportGPIOPin(%d) failed!", pin);
     }

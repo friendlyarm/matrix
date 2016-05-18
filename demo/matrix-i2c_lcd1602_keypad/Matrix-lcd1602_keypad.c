@@ -47,8 +47,14 @@ int main(int argc, char ** argv)
     time_t lt;
     char curTime[TIME_STR_BUFSIZE];
     char preTime[TIME_STR_BUFSIZE];
-
-    if ((devFD = LCD1602KeyInit()) == -1) {
+    int i2cDev = 0;
+    
+    if (argc == 2) {
+        i2cDev = atoi(argv[1]);
+    }
+    
+    boardInit();
+    if ((devFD = LCD1602KeyInit(i2cDev)) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
     }
@@ -57,6 +63,7 @@ int main(int argc, char ** argv)
 
     while (1) {
         keyValue = LCD1602GetKey(devFD);
+        printf("Got key:%x\n", keyValue);
         if (keyValue != lastKeyValue) {
             lastKeyValue = keyValue;
         } else if (showDefault != 1){

@@ -86,11 +86,14 @@ EXPORT int mcpWriteData8(int devFD, unsigned char data)
     return 0;
 }
 
-EXPORT int mcpInit() 
+EXPORT int mcpInit(int i2cDev) 
 {
     clearLastError();
     int devFD;
-    if ((devFD = openHW(I2C0_PATH, O_RDWR)) < 0) {
+    char buf[16];
+    memset(buf, 0, sizeof(buf));
+    sprintf(buf, "/dev/i2c-%d", i2cDev);
+    if ((devFD = openHW(buf, O_RDWR)) < 0) {
         setLastError("Fail to open I2C device mcp");
         return -1;
     } else {
@@ -164,11 +167,11 @@ EXPORT int LCD1602KeyDispLines(int devFD, char* line1, char* line2) {
     return ret;
 }
 
-EXPORT int LCD1602KeyInit()
+EXPORT int LCD1602KeyInit(int i2cDev)
 {
     clearLastError();
     int devFD;
-    if ((devFD = mcpInit()) == -1) {
+    if ((devFD = mcpInit(i2cDev)) == -1) {
         setLastError("Fail to init mcp23017");
         return -1;
     }

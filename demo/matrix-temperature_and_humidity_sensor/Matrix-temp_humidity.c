@@ -8,6 +8,7 @@ int main(int argc, char ** argv)
     int dhtTemp = 0;
     int dhtHdty = 0;
 
+    boardInit();
     if ((ret = dht11Read(DHT_HUMIDITY, &dhtHdty)) != -1) {
         printf("Get humidity : %d\n", dhtHdty);
     } else {
@@ -19,6 +20,5 @@ int main(int argc, char ** argv)
     } else {
         printf("Faided to get temperature\n");
     }
-
     return ret;
 }

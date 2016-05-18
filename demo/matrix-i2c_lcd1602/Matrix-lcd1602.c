@@ -9,7 +9,14 @@
 int main(int argc, char ** argv)
 {
     int devFD;
-    if ((devFD = LCD1602Init()) == -1) {
+    int i2cDev = 0;
+    
+    if (argc == 2) {
+        i2cDev = atoi(argv[1]);
+    }
+    
+    boardInit();
+    if ((devFD = LCD1602Init(i2cDev)) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
     }

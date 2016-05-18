@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "libfahw.h"
 
-#define LED_BLINK_TIMES     10
+#define LED_BLINK_TIMES     (5)
 
 int main(int argc, char ** argv) 
 {
@@ -10,6 +11,11 @@ int main(int argc, char ** argv)
     int i = 0;
     int ret = -1;
 
+    if (argc == 2) {
+        ledPin = GPIO_PIN(atoi(argv[1]));
+    }
+    
+    boardInit();
     if ((ret = exportGPIOPin(ledPin)) == -1) {   
         printf("exportGPIOPin(%d) failed\n", ledPin);
     }
@@ -26,7 +32,7 @@ int main(int argc, char ** argv)
         if (ret == -1) {
             printf("setGPIOValue(%d) failed\n", ledPin);
         }
-        printf("LED blinking times %d\n", i);
+        printf("LED blinking times %d\n", i+1);
         sleep(1);
     }
     unexportGPIOPin(ledPin);

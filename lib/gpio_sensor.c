@@ -4,7 +4,8 @@
 
 static int sensor_num = 0;
 
-EXPORT int sensorInit(struct sensor *dev, int num) {
+EXPORT int sensorInit(struct sensor *dev, int num) 
+{
     clearLastError();
     int devFD;
     int i;
@@ -33,7 +34,8 @@ EXPORT int sensorInit(struct sensor *dev, int num) {
     return devFD;
 }
 
-EXPORT int sensorRead(int devFD, char *buf, int len) {
+EXPORT int sensorRead(int devFD, char *buf, int len) 
+{
     clearLastError();
     int retSize = 0;
     if ((retSize = read(devFD, buf, len)) < 0) {
@@ -43,7 +45,8 @@ EXPORT int sensorRead(int devFD, char *buf, int len) {
     return retSize;
 }
 
-EXPORT void sensorDeinit(int devFD) {
+EXPORT void sensorDeinit(int devFD) 
+{
     clearLastError();
     if(ioctl(devFD, STOP_ALL_SENSOR, 0) == -1) {
         setLastError("Fail to stop sensor");
