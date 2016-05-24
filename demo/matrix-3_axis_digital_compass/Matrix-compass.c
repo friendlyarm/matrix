@@ -8,11 +8,12 @@ int main(int argc, char ** argv)
     double angle;
     int i2cDev = 0;
     
-    if (argc == 2) {
-        i2cDev = atoi(argv[1]);
-    }
+    if (boardInit() < 0)
+        printf("Fail to init board\n");
     
-    boardInit();
+    if (argc == 2)
+        i2cDev = atoi(argv[1]);
+    
     if ((devFD = hmc5883Init(i2cDev)) == -1) {
         printf("Fail to init hmc5883\n");
         return -1;
@@ -23,7 +24,7 @@ int main(int argc, char ** argv)
         hmc5883DeInit(devFD);
         return -1;
     }
-    printf("The angle is %f\n", angle);
+    printf("The angle is %.1f\n", angle);
     printf("You are heading ");
     if((angle < 22.5) || (angle > 337.5 )) {           
         printf("South\n");

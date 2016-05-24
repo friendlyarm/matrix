@@ -114,7 +114,6 @@ static int readTemp(const char* filename, int* ok)
         rTrim(line);
         len = strlen(line);
         if (len > 0) {
-            printf("line[%d] %s\n", lineNum, line);
             if (yes == 1 && lineNum == 2) {
                 char* pLine = strstr(line, "t=");
                 if (pLine != 0) {

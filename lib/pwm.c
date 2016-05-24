@@ -2,22 +2,49 @@
 #include "libfahw-filectl.h"
 #include "libfahw-pwm.h"
 
-static int pwmGPIO[3] = {-1, -1, -1};
+static int pwmGPIO[3];
 static int pwmNum = -1;
-void initPwmGPIO(int board)
+int initPwmGPIO(int board)
 {
     clearLastError();
+    int ret = -1;
+    
     memset(pwmGPIO, -1, sizeof(pwmGPIO));
     switch(board) {
     case BOARD_NANOPI_M1: {
         int buf[2] = {5, 6};
         memcpy(pwmGPIO, buf, sizeof(buf));
         pwmNum = 2;
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_2: {
+        int buf[3] = {97, 77, 78};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 3;
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_2_FIRE:
+    case BOARD_NANOPI_M2: {
+        int buf[3] = {97, 77, 78};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 3;
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_T2: {
+        int buf[3] = {97, 77, 78};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 3;
+        ret = 0;
         break;
     }
     default:
+        ret = -1;
         break;
     }
+    return ret;
 }
 
 EXPORT int pwmtoGPIO(int pwm)

@@ -1,29 +1,60 @@
 #include "common.h"
 #include "libfahw-gpio.h"
 
-static int pinGPIO[41] = {-1, -1, -1, 99, -1, 98, -1,  60, 117, -1, 113,
-                              61, 58, 62, -1, 63, 78,  -1,  59, 95, -1,
-                              96, 97, 93, 94, -1, 77, 103, 102, 72, -1,
-                              73, 92, 74, -1, 76, 71,  75, 162, -1, 163,
-                          };
+static int pinGPIO[41];
 
-void initPinGPIO(int board)
+int initPinGPIO(int board)
 {
     clearLastError();
+    int ret = -1;
+    
     switch(board) {
     case BOARD_NANOPI_M1: {
-        // i2c & spi do not use as gpio
-        int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1, -1, 203, 198, -1, 199,
-                                   0, 6, 2, -1, 3, 200,  -1, 201, -1, -1,
-                                   -1, 1, -1, -1, -1, -1, -1, -1, 20, -1,
-                                   21, 7, 8, -1, -1, -1, 9, -1, -1, -1,
+        int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1,  -1, 203, 198, -1, 199,
+                                    0,  6,  2, -1,  3, 200,  -1, 201, -1, -1,
+                                   -1,  1, -1, -1, -1,  -1,  -1,  -1, 20, -1,
+                                   21,  7,  8, -1, 16,  13,   9,  15, -1, 14,
                                   };
         memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_2:{        
+        int tempPinGPIO[41] = {-1, -1, -1, 99, -1, 98, -1,  60, 117, -1, 113,
+                                   61, 58, 62, -1, 63, 78,  -1,  59, 95, -1,
+                                   96, 97, 93, 94, -1, 77, 103, 102, 72, -1,
+                                   73, 92, 74, -1, 76, 71,  75, 162, -1, 163,
+                                  };
+        memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_2_FIRE:
+    case BOARD_NANOPI_M2: {
+        int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1, -1, 104, 117, -1, 113,
+                                   61, 97, 62, -1, 63, 78,  -1,  59, -1, -1,
+                                   -1, 60, -1, -1, -1, 58,  -1,  -1, 72, -1,
+                                   71, 92, 77, -1, 75, 74,  163, 76, -1, 73,
+                                  };
+        memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        ret = 0;
+        break;
+    }
+    case BOARD_NANOPI_T2: {
+        int tempPinGPIO[41] = {-1, -1,   -1, 116, 112, -1,  -1,  -1,  -1, -1, -1,
+                                  117,  113,  61,  60, 63,  62,  68,  71, 72, 88,
+                                   92,   58,  97, 104, 77, 163,  78, 165, -1, -1,
+                                   };
+        memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        ret = 0;
         break;
     }
     default:
+        ret = -1;
         break;
     }
+    
+    return ret;
 }
 
 EXPORT int pintoGPIO(int pin)
@@ -41,8 +72,11 @@ EXPORT int exportGPIOPin(int pin)
 {
     clearLastError();
     int gpio = pintoGPIO(pin);
-    
-    return writeIntValueToFile("/sys/class/gpio/export", gpio);
+    int ret = writeIntValueToFile("/sys/class/gpio/export", gpio);
+    if (ret > 0)
+        return 0;
+    else 
+        return -1;
 }
 
 EXPORT int unexportGPIOPin(int pin) 

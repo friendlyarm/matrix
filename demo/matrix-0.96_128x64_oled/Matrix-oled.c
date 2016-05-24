@@ -5,7 +5,9 @@ int main(int argc, char *argv[])
 {
     int devFD;
     
-    boardInit();
+    if (boardInit() < 0) {
+        printf("Fail to init board\n");
+    }
     if ((devFD = OLEDInit(GPIO_PIN(7), GPIO_PIN(11))) == -1) {
         printf("Fail to init OLED\n");
         return -1;

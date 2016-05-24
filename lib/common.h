@@ -38,6 +38,10 @@ extern int readIntValueFromFile(char* fileName);
 #define BOARD_MINI6410             (6410)
 #define BOARD_MINI210              (210)
 #define BOARD_TINY4412             (4412)
-#define BOARD_NANOPI_M1            (1)
+#define BOARD_NANOPI_M1            (68330)  //'H3'
+#define BOARD_NANOPI_2             (44180)
+#define BOARD_NANOPI_2_FIRE        (44184)
+#define BOARD_NANOPI_M2            (44185)
+#define BOARD_NANOPI_T2            (44181)
 
 #endif

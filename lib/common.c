@@ -5,15 +5,16 @@
 int writeValueToFile(char* fileName, char* buff) 
 {
     clearLastError();
-    FILE *fp = fopen(fileName,"w");
+    int ret;
+    FILE *fp = fopen(fileName, "w");
     if (fp == NULL) {
-        setLastError("Unable to open file %s",fileName);
-        return -1;
+        setLastError("Unable to open file %s", fileName);
+        ret = -1;
     } else {
-        fwrite ( buff, strlen(buff), 1, fp );
+        ret = fwrite(buff, strlen(buff), 1, fp);
+        fclose(fp);
     }
-    fclose(fp);
-    return 0;
+    return ret;
 }
 
 
@@ -56,22 +57,22 @@ int readIntValueFromFile(char* fileName)
     return ret;
 }
 
-static char* getBoardInfo()
+static int getBoardInfo(int length, char info[][32])
 {
     clearLastError();
     int n,i,j;
     char lineUntrim[1024], line[1024],*p;
     FILE *f;
-    static char result[255];
+    int ret = 0;
     
     if (!(f = fopen("/proc/cpuinfo", "r"))) {
     	setLastError("Unable to open /proc/cpuinfo");
-        return 0;
+        return ret;
     }
     
     while (!feof(f)) {
         if(!fgets(lineUntrim, sizeof(lineUntrim), f)) {
-            return 0;
+            return ret;
         } else {
             j=0;
             for(i=0; i<strlen(lineUntrim);i++) {
@@ -86,10 +87,17 @@ static char* getBoardInfo()
                 if ( (p = strtok(line, ":")) ) {
                     if (strncasecmp(p, "Hardware", strlen("Hardware")) == 0) {
                         if ( (p = strtok(0, ":")) ) {
-                            memset(result,0,255);
-                            strncpy(result, p, 254);
-                            fclose(f);
-                            return result;
+                            printf("Hardware:%s\n", p);
+                            memset(info[0], 0, 32);
+                            strncpy(info[0], p, 32-1);
+                            ret++;
+                        }
+                    } else if (strncasecmp(p, "Revision", strlen("Revision")) == 0) {
+                        if ( (p = strtok(0, ":")) ) {
+                            printf("Revision:%s\n", p);
+                            memset(info[1], 0, 32);
+                            strncpy(info[1], p, 32-1);
+                            ret++;
                         }
                     }
                 }
@@ -97,22 +105,36 @@ static char* getBoardInfo()
         }
     }
     fclose(f);
-    return 0;
+    return ret;
 }
 
 static int getBoardType() 
 {    
     clearLastError();
     int ret = -1;
-    char* boardType = getBoardInfo();
-    if (strncasecmp(boardType, "MINI6410", 8)==0) {
+    char info[2][32];
+    int boardType = getBoardInfo(2, info);
+    if (boardType < 1) {
+        return ret;
+    }
+    if (strncasecmp(info[0], "MINI6410", 8)==0) {
         ret = BOARD_MINI6410;
-    } else if (strncasecmp(boardType, "MINI210", 7)==0) {
+    } else if (strncasecmp(info[0], "MINI210", 7)==0) {
         ret = BOARD_MINI210;
-    } else if (strncasecmp(boardType, "TINY4412", 8)==0) {
+    } else if (strncasecmp(info[0], "TINY4412", 8)==0) {
         ret = BOARD_TINY4412;
-    } else if (strncasecmp(boardType, "sun8i", 5)==0) {
+    } else if (strncasecmp(info[0], "sun8i", 5)==0) {
         ret = BOARD_NANOPI_M1;
+    } else if (strncasecmp(info[0], "NANOPI2", 7)==0) {
+        if (strncasecmp(info[1], "0000", 4)==0) {
+            ret = BOARD_NANOPI_2;
+        } else if (strncasecmp(info[1], "0004", 4)==0) {
+            ret = BOARD_NANOPI_2_FIRE;
+        } else if (strncasecmp(info[1], "0005", 4)==0) {
+            ret = BOARD_NANOPI_M2;   
+        } else if (strncasecmp(info[1], "0001", 4)==0) {
+            ret = BOARD_NANOPI_T2;
+        }
     }
     
     return ret;
@@ -122,15 +144,11 @@ EXPORT int boardInit()
 {
     clearLastError();
     int board = getBoardType();
-    switch(board) {
-    case BOARD_NANOPI_M1:
-        initPinGPIO(board);
-        initPwmGPIO(board);
-        break;
-    default:
-        setLastError("unsupported board");
-        return -1;
-    }
+    printf("BoardType:%d\n", board);
+    if (initPinGPIO(board))
+        setLastError("Fail to initPinGPIO");
+    if (initPwmGPIO(board))
+        setLastError("Fail to initPwmGPIO");
     return board;
 }
 

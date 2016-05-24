@@ -39,8 +39,9 @@ $(SLIB): $(LIBOBJ)
 	$(RANLIB) $@
 	
 install: $(LIB)
-	install ./includes/libfahw*.h /usr/include
-	install --mode=644 libfahw.so /usr/lib
-	install --mode=644 libfahw.a /usr/lib
+	install ./includes/libfahw*.h /usr/local/include
+	install --mode=644 libfahw.so /usr/local/lib
+	install --mode=644 libfahw.a /usr/local/lib
+	ldconfig
 clean:
 	rm -rf $(LIB) $(LIBOBJ) $(SLIB) $(DEPS) $(OBJDIR) $(DEPDIR)

@@ -6,7 +6,7 @@
 #define PWM_IOCTL_CONFIG        (0x4)
 #define PWM_IOCTL_RELEASE       (0x8)
 
-void initPwmGPIO(int board);
+int initPwmGPIO(int board);
 int PWMPlay(int pin, int freq, int duty);
 int PWMStop(int pin);
 

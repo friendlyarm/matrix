@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "libfahw.h"
+
+#define DRIVER_MODULE "matrix_gpio_int"
 
 static struct sensor brSwitch[] = {
         {
@@ -8,20 +11,35 @@ static struct sensor brSwitch[] = {
                 IRQ_TYPE_EDGE_FALLING,
         }
 };
+int devFD = -1;
+
+void intHandler(int signNum)
+{
+    if (signNum == SIGINT) {
+        printf("Quit reading\n");
+        sensorDeinit(devFD);
+        system("rmmod "DRIVER_MODULE);
+    }
+    exit(0);
+}
 
 int main(int argc, char ** argv)
 {
-    int i;
+    int i, board;
     int retSize = -1;
     char value[ARRAY_SIZE(brSwitch)];
-    int devFD = -1;
 
     if (argc == 2) {
         brSwitch[0].pin = atoi(argv[1]);
     }
     
     printf("Using GPIO_PIN(%d)\n", brSwitch[0].pin);
-    boardInit();
+    if ((board = boardInit()) < 0)
+        printf("Fail to init board\n");
+    system("modprobe "DRIVER_MODULE);
+    signal(SIGINT, intHandler);
+    if (board == BOARD_NANOPI_T2)
+        brSwitch[0].pin = GPIO_PIN(15);
     if ((devFD =sensorInit(brSwitch, ARRAY_SIZE(brSwitch))) == -1) {
         printf("Fail to init sensor\n");
         return -1;
@@ -37,5 +55,6 @@ int main(int argc, char ** argv)
         }
     }
     sensorDeinit(devFD);
+    system("rmmod "DRIVER_MODULE);
     return 0;
 }
