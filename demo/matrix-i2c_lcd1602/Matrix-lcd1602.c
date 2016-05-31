@@ -8,14 +8,15 @@
 
 int main(int argc, char ** argv)
 {
-    int devFD;
+    int devFD, board;
     int i2cDev = 0;
     
-    if (argc == 2) {
+    if (argc == 2)
         i2cDev = atoi(argv[1]);
-    }
     
-    boardInit();
+    if ((board = boardInit()) < 0)
+        printf("Fail to init board\n");
+    
     if ((devFD = LCD1602Init(i2cDev)) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
