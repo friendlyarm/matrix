@@ -7,10 +7,10 @@ if [ $UID -ne 0 ]
 fi
 
 if [ $# -ne 1 ]; then
-    echo "Usage:./run.sh /dev/fbx"
+    echo "Usage:${0} /dev/fbx"
     exit 1
 fi
-FB_DEV=$1
+FB_DEV=${1}
 
 HARDWARE=`cat /proc/cpuinfo | grep Hardware`
 REVISION=`cat /proc/cpuinfo | grep Revision`
@@ -19,7 +19,7 @@ REVISION=${REVISION#*: }
 echo "Hardware:${HARDWARE}"
 echo "Revision:${REVISION}"
 
-if [[ "x$1" = "x/dev/fb-st7735s" ]]; then
+if [[ "x${FB_DEV}" = "x/dev/fb-st7735s" ]]; then
 	if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then		# nanopi-m1
 		modprobe fbtft_device name=matrix-st7735s gpios=dc:17,reset:3,cs:201
 	elif [[ "x${HARDWARE}" = "xNANOPI2" ]]; then	# nanopi2/fire/m2
@@ -29,7 +29,7 @@ if [[ "x$1" = "x/dev/fb-st7735s" ]]; then
 		exit 1
 	fi
 	export QWS_DISPLAY=Transformed:Rot90:Linuxfb:${FB_DEV}:enable=1:mWidth90:mmHeight45:0
-elif [[ "x$1" = "x/dev/fb-st7789s" ]]; then
+elif [[ "x${FB_DEV}" = "x/dev/fb-st7789s" ]]; then
 	if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then
 		modprobe fbtft_device name=matrix-st7789s gpios=dc:1,reset:203,cs:67
 	elif [[ "x${HARDWARE}" = "xNANOPI2" ]]; then	# nanopi2/fire/m2
