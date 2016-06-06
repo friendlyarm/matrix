@@ -39,6 +39,7 @@ int testLED(int board)
             printf("unexportGPIOPin(%d) failed\n", pin[i]);
         }
     }
+    
     return ret;
 }
 
@@ -66,6 +67,7 @@ int readButton()
         }
     }
     printf("\n");
+    
     return ret;
 }
 
@@ -79,14 +81,13 @@ int readADC()
     system("modprobe "ADC_DRIVER_MODULE);
     for (i=0; i<ADC_READ_TIMES; i++) {
         if (pcf8591Read(channel, &value) != -1) {
-            printf("ADC channel%d: %d\n", channel, value);
+            printf("The channel%d value is %d\n", channel, value);
         } else {
             printf("Fail to get channel%d value\n", channel);
-            return -1;
         }
-        sleep(1);
     }
     system("rmmod "ADC_DRIVER_MODULE);
+    
     return 0;
 }
 
@@ -100,13 +101,13 @@ int readCompass()
         printf("Fail to init hmc5883\n");
         return -1;
     }
-
-    if ((angle = hmc5883Read(devFD)) == -1) {
+    if ((angle = hmc5883Read(devFD)) != -1) {
+        printf("The angle is %.1f\n", angle);
+    } else {
         printf("Fail to read hmc5883\n");
-        hmc5883DeInit(devFD);
-        return -1;
     }
-    printf("Compass angle: %.1f\n", angle);
+    hmc5883DeInit(devFD);
+    
     return 0;
 }
 
@@ -121,15 +122,17 @@ int readTemp()
     
     system("modprobe "TEMP_DRIVER_MODULE);
     sprintf(modStr, "modprobe %s gpio=%d", TEMP_GPIO_DRIVER_MODULE, pintoGPIO(pin));
-    printf("%s\n", modStr);
     system(modStr);
+    sleep(1);
+    memset(temperature, 0, BUF_SIZE);
     if (ds18b20Read(temperature) > 0) {
-        printf("Temperature: %.3f C\n", atoi(temperature)/1000.0);
+        printf("The temperature is %.3f C\n", atoi(temperature)/1000.0);
     } else {
         printf("Fail to get temperature\n");        
     }
     system("rmmod "TEMP_GPIO_DRIVER_MODULE);
     system("rmmod "TEMP_DRIVER_MODULE);
+    
     return 0;
 }
 
@@ -138,7 +141,7 @@ static int pwm;
 void PWMIntHandler(int signNum)
 {
     if (signNum == SIGINT) {
-        printf("Quit outputting PWM\n");
+        printf("Clean up\n");
         PWMStop(pwm);
         system("rmmod "PWM_DRIVER_MODULE);
     }
@@ -159,12 +162,12 @@ int testPWM(int board)
     printf("Pwm start\n");
     if (PWMPlay(pwm, Hz, duty) == -1) {
         printf("Fail to output PWM\n");
-        return -1;
     }
     sleep(1);
     PWMStop(pwm);
     system("rmmod "PWM_DRIVER_MODULE);
     printf("Pwm stop\n");
+    
     return 0;
 }
 
@@ -175,9 +178,9 @@ static int irFD;
 void IRIntHandler(int signNum)
 {
     if (signNum == SIGINT) {
+        printf("Clean up\n");
         closeHW(irFD);
         system("rmmod "IR_DRIVER_MODULE);
-        printf("Quit waiting IR event\n");
     }
     exit(0);
 }
@@ -197,7 +200,7 @@ int testIR()
     irFD = openHW(devName, O_RDWR);
     if (irFD < 0) {
         printf("Fail to open GPIO IR device\n");
-        return -1;
+        goto err;
     }
     printf("Press the IR remoter\n");
     for (i=0; i<IR_EVENT_TIMES; i++) {
@@ -208,7 +211,9 @@ int testIR()
         }
     }
     closeHW(irFD);
+err:
     system("rmmod "IR_DRIVER_MODULE);
+    
     return 0;
 }
 
@@ -216,8 +221,10 @@ int main(int argc, char ** argv)
 {
     int board;
     
-    if ((board = boardInit()) < 0)
+    if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
+        return -1;
+    }
     testLED(board);
     readButton();
     readADC();

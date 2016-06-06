@@ -5,12 +5,12 @@
 #include "libfahw.h"
 
 #define DRIVER_MODULE "matrix_pwm"
-int pwm;
+static int pwm;
 
 void intHandler(int signNum)
 {
     if (signNum == SIGINT) {
-        printf("Quit outputting PWM\n");
+        printf("Clean up\n");
         PWMStop(pwm);
         system("rmmod "DRIVER_MODULE);
     }
@@ -19,11 +19,13 @@ void intHandler(int signNum)
 
 int main(int argc, char ** argv)
 {
-    int Hz, duty;
-    int board;
+    int Hz, duty, board;
     
-    if ((board = boardInit()) < 0)
+    if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
+        return -1;
+    } 
+    
     system("modprobe "DRIVER_MODULE);
     signal(SIGINT, intHandler);
     if (argc == 4) {
@@ -38,12 +40,11 @@ int main(int argc, char ** argv)
     }
     if (PWMPlay(pwm, Hz, duty) == -1) {
         printf("Fail to output PWM\n");
-        return -1;
     }  
     printf("Press enter to stop PWM\n");
     getchar();
     PWMStop(pwm);
     system("rmmod "DRIVER_MODULE);
-    printf("Stopped PWM\n");
+    
     return 0;
 }

@@ -16,7 +16,7 @@ int devFD = -1;
 void intHandler(int signNum)
 {
     if (signNum == SIGINT) {
-        printf("Quit waiting\n");
+        printf("Clean up\n");
         sensorDeinit(devFD);
         system("rmmod "DRIVER_MODULE);
     }
@@ -29,20 +29,21 @@ int main(int argc, char ** argv)
     int retSize = -1;
     char value[ARRAY_SIZE(dev)];
 
-    if ((board = boardInit()) < 0)
+    if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
-    
-    if (argc == 2) {
-        dev[0].pin = atoi(argv[1]);
+        return -1;
     }
-    printf("Using GPIO_PIN(%d)\n", dev[0].pin);
+    
+    if (argc == 2)
+        dev[0].pin = atoi(argv[1]);
     system("modprobe "DRIVER_MODULE);
     signal(SIGINT, intHandler);
     if (board == BOARD_NANOPI_T2)
         dev[0].pin = GPIO_PIN(15);
+    printf("Use GPIO_PIN(%d)\n", dev[0].pin);
     if ((devFD =sensorInit(dev, ARRAY_SIZE(dev))) == -1) {
         printf("Fail to init sensor\n");
-        return -1;
+        goto err;
     }
     printf("Waiting event...\n");
     if ((retSize = sensorRead(devFD, value, ARRAY_SIZE(dev))) == -1) {
@@ -51,10 +52,11 @@ int main(int argc, char ** argv)
     if (retSize > 0) {
         i = 0;
         for (i=0; i<retSize; i++) {
-            printf("dev[%d] value: %d\n", i, value[i]);
+            printf("Device[%d] value is %d\n", i, value[i]);
         }
     }
     sensorDeinit(devFD);
+err:    
     system("rmmod "DRIVER_MODULE);
     return 0;
 }

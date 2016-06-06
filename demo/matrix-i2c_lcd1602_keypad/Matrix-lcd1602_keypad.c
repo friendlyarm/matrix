@@ -49,22 +49,21 @@ int main(int argc, char ** argv)
     char preTime[TIME_STR_BUFSIZE];
     int i2cDev = 0;
     
-    if (argc == 2)
-        i2cDev = atoi(argv[1]);
-    
-    if ((board = boardInit()) < 0)
+    if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
+        return -1;
+    }
     
+    if (argc == 2)
+        i2cDev = atoi(argv[1]);    
     if ((devFD = LCD1602KeyInit(i2cDev)) == -1) {
         printf("Fail to init LCD1602\n");
         return -1;
     }
     LCD1602KeyClear(devFD);
     printf("waiting key press...\n");
-
     while (1) {
         keyValue = LCD1602GetKey(devFD);
-        printf("Got key:%x\n", keyValue);
         if (keyValue != lastKeyValue) {
             lastKeyValue = keyValue;
         } else if (showDefault != 1){

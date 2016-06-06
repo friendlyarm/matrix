@@ -6,13 +6,15 @@
 #include <unistd.h>
 #include "libfahw.h"
 
-#define ENCODER_READ_TIMES      (100)
+#define ENCODER_READ_TIMES      (20)
+#define DRIVER_MODULE           "matrix_rotary_encoder"
 
 void encoderHandler(int signNum)
 {
     if (signNum == SIGINT) {
-        printf("Quit reading rotary encoder\n");
+        printf("Clean up\n");
         rotaryEncoderDeInit();
+        system("rmmod "DRIVER_MODULE);
     }
     exit(0);
 }
@@ -22,23 +24,34 @@ int main(int argc, char ** argv)
     int i = 0;
     int encoderSw = 0;
     int encoderValue = 0;
+    int board;
     int swPin = GPIO_PIN(7);
-    int siaPin = GPIO_PIN(11);
-    int sibPin = GPIO_PIN(12);
+    int siaPin = GPIO_PIN(8);
+    int sibPin = GPIO_PIN(10);
 
-    boardInit();
-    if (rotaryEncoderInit(swPin, siaPin, sibPin)) {
-        printf("Fail to init rotary encoder\n");
+    if ((board = boardInit()) < 0) {
+        printf("Fail to init board\n");
         return -1;
     }
-
+    if (board == BOARD_NANOPI_T2) {
+        swPin = GPIO_PIN(15);
+        siaPin = GPIO_PIN(16);
+        sibPin = GPIO_PIN(17);
+    }
+    system("modprobe "DRIVER_MODULE);
+    if (rotaryEncoderInit(swPin, siaPin, sibPin)) {
+        printf("Fail to init rotary encoder\n");
+        goto err;
+    }
     signal(SIGINT, encoderHandler);
     for (i=0; i<ENCODER_READ_TIMES; i++) {
         rotaryEncoderRead(ENCODER_SW, &encoderSw);
         rotaryEncoderRead(ENCODER_VALUE, &encoderValue);
         printf("Get sw=%d value=%d\n", encoderSw, encoderValue);
-        usleep(100000);
+        sleep(1);
     }
     rotaryEncoderDeInit();
+err:
+    system("rmmod "DRIVER_MODULE);
     return 0;
 }

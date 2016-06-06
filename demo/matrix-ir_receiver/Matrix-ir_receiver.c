@@ -5,17 +5,17 @@
 #include <linux/input.h>
 #include "libfahw.h"
 
-#define BUF_SIZE    (64)
+#define BUF_SIZE            (64)
 #define GPIO_IR_DEV         "/dev/input/gpio_ir_recv"
 #define IR_EVENT_TIMES      (6)
-#define IR_DRIVER_MODULE    "matrix_ir_recv"
+#define DRIVER_MODULE       "matrix_ir_recv"
 static int irFD;
 void IRIntHandler(int signNum)
 {
     if (signNum == SIGINT) {
+        printf("Clean up\n");
         closeHW(irFD);
-        system("rmmod "IR_DRIVER_MODULE);
-        printf("Quit waiting IR event\n");
+        system("rmmod "DRIVER_MODULE);
     }
     exit(0);
 }
@@ -29,18 +29,21 @@ int main(int argc, char ** argv)
     char modStr[BUF_SIZE];
     struct input_event evKey;
     
-    if ((board = boardInit()) < 0)
+    if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
+        return -1;
+    }
     if (board == BOARD_NANOPI_T2)
         pin = GPIO_PIN(15);
-    sprintf(modStr, "modprobe %s gpio=%d", IR_DRIVER_MODULE, pintoGPIO(pin));
+    
+    sprintf(modStr, "modprobe %s gpio=%d", DRIVER_MODULE, pintoGPIO(pin));
     system(modStr);
     signal(SIGINT, IRIntHandler);
     sleep(1);
     irFD = openHW(devName, O_RDWR);
     if (irFD < 0) {
         printf("Fail to open GPIO IR device\n");
-        return -1;
+        goto err;
     }
     printf("Press the IR remoter\n");
     for (i=0; i<IR_EVENT_TIMES; i++) {
@@ -51,6 +54,7 @@ int main(int argc, char ** argv)
         }
     }
     closeHW(irFD);
-    system("rmmod "IR_DRIVER_MODULE);
+err:
+    system("rmmod "DRIVER_MODULE);
     return 0;
 }

@@ -2,23 +2,35 @@
 #include <stdlib.h>
 #include "libfahw.h"
 
+#define BUF_SIZE            (64)
+#define DRIVER_MODULE       "dht11"
+
 int main(int argc, char ** argv)
 {
     int ret = -1;
-    int dhtTemp = 0;
-    int dhtHdty = 0;
+    int dhtTemp=0, dhtHdty=0, board;
+    char modStr[BUF_SIZE];
+    int pin = GPIO_PIN(7);
 
-    boardInit();
+    if ((board = boardInit()) < 0) {
+        printf("Fail to init board\n");
+        return -1;
+    }    
+    if (board == BOARD_NANOPI_T2)
+        pin = GPIO_PIN(15);
+    
+    sprintf(modStr, "modprobe %s gpio=%d", DRIVER_MODULE, pintoGPIO(pin));
+    system(modStr);
     if ((ret = dht11Read(DHT_HUMIDITY, &dhtHdty)) != -1) {
-        printf("Get humidity : %d\n", dhtHdty);
+        printf("The humidity is %d\n", dhtHdty);
     } else {
         printf("Faided to get humidity\n");
     }
-
     if ((ret = dht11Read(DHT_TEMP, &dhtTemp)) != -1) {
-        printf("Get temperature : %d\n", dhtTemp);
+        printf("The temperature is %d\n", dhtTemp);
     } else {
         printf("Faided to get temperature\n");
     }
+    system("rmmod "DRIVER_MODULE);
     return ret;
 }

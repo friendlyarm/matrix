@@ -10,7 +10,7 @@ EXPORT int rotaryEncoderInit(int swPin, int siaPin, int sibPin)
     char buf[32];
     
     sprintf(buf,"%d,%d,%d\n", pintoGPIO(swPin), pintoGPIO(siaPin), pintoGPIO(sibPin));
-    if (writeValueToFile(ENCODER_PATH"gpio", buf)) {
+    if (writeValueToFile(ENCODER_PATH"gpio", buf) <= 0) {
         setLastError("Fail to set pin for rotary encoder");
         return -1;
     }
@@ -49,7 +49,7 @@ EXPORT int rotaryEncoderDeInit()
     char buf[32];
     
     sprintf(buf,"%d,%d,%d\n", -1, -1, -1);
-    if (writeValueToFile(ENCODER_PATH"gpio", buf)) {
+    if (writeValueToFile(ENCODER_PATH"gpio", buf) <= 0) {
         setLastError("Fail to unset pin for rotary encoder");
         return -1;
     }
