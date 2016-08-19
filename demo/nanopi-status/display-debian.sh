@@ -53,6 +53,8 @@ if [[ "x${FB_DEV}" = "x/dev/fb-st7735s" ]]; then
 		modprobe fbtft_device name=matrix-st7735s gpios=dc:17,reset:3,cs:201
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]]; then	                                # pi2/fire/m2
         modprobe fbtft_device name=matrix-st7735s gpios=dc:58,reset:63,cs:59        
+    elif [[ "x${HARDWARE}" = "xNANOPI3" ]]; then                                    # m3
+        modprobe fbtft_device name=matrix-st7735s gpios=dc:58,reset:63,cs:59
     else
 		echo "Unsupported board"
 		exit 1
@@ -66,6 +68,8 @@ elif [[ "x${FB_DEV}" = "x/dev/fb-st7789s" ]]; then
         modprobe fbtft_device name=matrix-st7789s gpios=dc:60,reset:104,cs:94        
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0005" ]]; then  # nanopi m2
         modprobe fbtft_device name=matrix-st7789s gpios=dc:60,reset:104,cs:94        
+    elif [[ "x${HARDWARE}" = "xNANOPI3" ]] && [[ "x${REVISION}" = "x0005" ]]; then  # nanopi m3
+        modprobe fbtft_device name=matrix-st7789s gpios=dc:60,reset:104,cs:94
     else
 		echo "Unsupported board"
 		exit 1

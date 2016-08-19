@@ -43,5 +43,6 @@ extern int readIntValueFromFile(char* fileName);
 #define BOARD_NANOPI_2_FIRE        (44184)
 #define BOARD_NANOPI_M2            (44185)
 #define BOARD_NANOPI_T2            (44181)
+#define BOARD_NANOPI_M3		   	   (68187)
 
 #endif

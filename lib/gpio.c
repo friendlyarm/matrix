@@ -49,6 +49,16 @@ int initPinGPIO(int board)
         ret = 0;
         break;
     }
+    case BOARD_NANOPI_M3: {
+        int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1, -1, 104, 117, -1, 113,
+                                   61, 97, 62, -1, 63, 78,  -1,  59, -1, -1,
+                                   -1, 60, -1, -1, -1, 58,  -1,  -1, 72, -1,
+                                   71, 92, 77, -1, 75, 74,  163, 76, -1, 73,
+                                  };
+        memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
+        ret = 0;
+        break;
+    }
     default:
         ret = -1;
         break;

@@ -40,6 +40,13 @@ int initPwmGPIO(int board)
         ret = 0;
         break;
     }
+   case BOARD_NANOPI_M3: {
+        int buf[3] = {97, 77, 78};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 3;
+        ret = 0;
+        break;
+    }
     default:
         ret = -1;
         break;
