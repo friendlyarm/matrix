@@ -256,9 +256,8 @@ EXPORT int OLEDInit(int cmdDatPin, int resetPin)
         ret = -1;
     }
 */
-    if (OLEDSetPos(devFD, 0, 0) == -1) {
-        ret = -1;
-    }
+    ret = OLEDSetPos(devFD, 0, 0);
+    
     if (ret == 0) {
         return devFD;
     } else {
