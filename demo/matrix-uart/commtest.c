@@ -214,7 +214,7 @@ void *com_rx (void *arg)
 			char *p = strstr(rx_buf,"$GNRMC,");
 			if(p){
 				p += 7;
-				unsigned char h = (p[0] - 48) * 10 + 40;
+				unsigned char h = (p[0] - 48) * 10 + p[1] - 40;
 				now_time[0] = h/10 + 48;
 				now_time[1] = h%10 + 48;
 				now_time[2] = '-';
