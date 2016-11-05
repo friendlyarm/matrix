@@ -6,6 +6,7 @@
 #include "libfahw-gpio.h"
 #include "common.h"
 
+static int oledFD;
 static int gCmdDatPin = -1;
 static int gResetPin = -1;
 static unsigned char spiMode = 0;
@@ -259,6 +260,7 @@ EXPORT int OLEDInit(int cmdDatPin, int resetPin)
     ret = OLEDSetPos(devFD, 0, 0);
     
     if (ret == 0) {
+	oledFD = devFD;
         return devFD;
     } else {
         unexportGPIOPin(resetPin);
@@ -316,23 +318,68 @@ EXPORT int OLEDDisp8x16Str(int devFD, int x, int y, char ch[])
     return 0;
 }
 
-EXPORT int OLEDCleanScreen(int devFD)
+EXPORT int OLEDCleanScreen(void)
 {
     int x,y;
-    unsigned char data = 0x00;
     int ret = 0;
-    for (y=0; y<8; y++)
+    for (y=0; y <= CURSOR_Y_MAX; y++)
     {
-        // set pos (y, 0)
-        OLEDWriteCmd(devFD, 0xb0+y);
-        OLEDWriteCmd(devFD, 0x00);
-        OLEDWriteCmd(devFD, 0x10);
-        for (x=0; x<OLED_WIDTH; x++) {
-            if (OLEDWriteData(devFD, data) == -1) {
-                ret = -1;
-                break;
-            }
+        for (x=0; x <= CURSOR_X_MAX; x++) {
+            OLEDDisp8x16Char(oledFD, x * 8, y * 16, ' ');
         }
     }
     return ret;
 } 
+
+struct oled_cursor{
+	int x;
+	int y;
+};
+
+struct oled_cursor __oled_cursor = {0 , 0};
+
+static int oputc (char byte)
+{
+	if('\b' == byte){
+		if((!__oled_cursor.x) && (!__oled_cursor.y))
+			return 0;
+		else if(!__oled_cursor.x){
+			__oled_cursor.x = CURSOR_X_MAX;
+			__oled_cursor.y--;
+		}
+		else {
+			__oled_cursor.x--;
+		}
+	}
+	else if('\n' == byte){
+		__oled_cursor.y = __oled_cursor.y < CURSOR_Y_MAX ? __oled_cursor.y + 1 : 0;
+		__oled_cursor.x = 0;
+	}
+	else if((' ' <= byte) &&(byte <= '~')){
+		OLEDDisp8x16Char(oledFD, __oled_cursor.x * 8, __oled_cursor.y * 16, byte);
+		if( __oled_cursor.x < CURSOR_X_MAX){
+			__oled_cursor.x++;
+		}
+		else{
+			__oled_cursor.x = 0;
+			__oled_cursor.y = __oled_cursor.y < CURSOR_Y_MAX ? __oled_cursor.y + 1 : 0;
+		}
+
+	}
+	return 0;
+}
+
+EXPORT int oprintf (const char *fmt, ...)
+{
+	va_list args;
+	char buf[64];
+	char* s = buf;
+	va_start(args,fmt);
+	vsnprintf(buf,64,fmt,args);
+	va_end(args);
+
+	while(*s){
+		oputc(*s++);
+	}
+	return 0;
+}
