@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
         printf("Fail to init board\n");
         return -1;
     }
-    if (board == BOARD_NANOPI_T2) {
+    if (board == BOARD_NANOPC_T2 || BOARD_NANOPC_T3) {
         ledPin1 = GPIO_PIN(15);
         ledPin2 = GPIO_PIN(16);
         ledPin3 = GPIO_PIN(17);

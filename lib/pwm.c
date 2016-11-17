@@ -33,7 +33,7 @@ int initPwmGPIO(int board)
         ret = 0;
         break;
     }
-    case BOARD_NANOPI_T2: {
+    case BOARD_NANOPC_T2: {
         int buf[3] = {97, 77, 78};
         memcpy(pwmGPIO, buf, sizeof(buf));
         pwmNum = 3;
@@ -41,6 +41,13 @@ int initPwmGPIO(int board)
         break;
     }
    case BOARD_NANOPI_M3: {
+        int buf[3] = {97, 77, 78};
+        memcpy(pwmGPIO, buf, sizeof(buf));
+        pwmNum = 3;
+        ret = 0;
+        break;
+    }
+   case BOARD_NANOPC_T3: {
         int buf[3] = {97, 77, 78};
         memcpy(pwmGPIO, buf, sizeof(buf));
         pwmNum = 3;
