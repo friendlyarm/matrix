@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#set -x
 if [ $UID -ne 0 ]
     then
     echo "Please run as root"
@@ -21,6 +21,7 @@ echo "Hardware:${HARDWARE}"
 echo "Revision:${REVISION}"
 
 # clean up
+rm -rf ./Xorg.log
 if fuser ${TS_DEV} >/dev/null 2>&1; then
     # echo "clean up ts"
     killall -9 xinput_calibrator >/dev/null 2>&1
@@ -76,12 +77,23 @@ elif [[ "x${FB_DEV}" = "x/dev/fb-st7789s" ]]; then
 	fi	
 fi
 FRAMEBUFFER=${FB_DEV} startx >Xorg.log 2>&1 &
-sleep 2
 
 if [[ "x${HARDWARE}" != "xsun8i" ]]; then                   # nanopi-m1 not support touchscreen yet
-    modprobe matrix_ads7846
-    DISPLAY_ENV=`grep -oe "Xorg.[0-9]" ./Xorg.log`
-    DISPLAY_ENV=${DISPLAY_ENV#*.}
+    let TIMEOUT=30
+    while [ ${TIMEOUT} -gt 0 ]; do
+        sleep 2
+        let TIMEOUT-=2
+        DISPLAY_ENV=`grep -oe "Xorg.[0-9]" ./Xorg.log`
+        DISPLAY_ENV=${DISPLAY_ENV#*.}
+        if  [ ! -n "$DISPLAY_ENV" ] ;then
+            printf "Waiting Desktop...%2d\r" ${TIMEOUT}
+        else
+            echo ""
+            break
+        fi
+    done
     echo "DISPLAY_ENV=${DISPLAY_ENV}"
+
+    modprobe matrix_ads7846
     DISPLAY=:${DISPLAY_ENV}.0 xinput_calibrator --device "ADS7846 Touchscreen" &
 fi
