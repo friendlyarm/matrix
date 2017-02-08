@@ -50,7 +50,7 @@ fi
 rmmod matrix_ads7846 fbtft_device >/dev/null 2>&1
 
 if [[ "x${FB_DEV}" = "x/dev/fb-st7735s" ]]; then
-    if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then		# nanopi-m1
+    if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then		# nanopi-m1/m1+/neo/air
 		modprobe fbtft_device name=matrix-st7735s gpios=dc:17,reset:3,cs:201
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]]; then	                                # pi2/fire/m2
         modprobe fbtft_device name=matrix-st7735s gpios=dc:58,reset:63,cs:59        
@@ -61,7 +61,7 @@ if [[ "x${FB_DEV}" = "x/dev/fb-st7735s" ]]; then
 		exit 1
 	fi
 elif [[ "x${FB_DEV}" = "x/dev/fb-st7789s" ]]; then
-    if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then      # nanopi-m1
+    if [[ "x${HARDWARE}" = "xsun8i" ]] && [[ "x${REVISION}" = "x0000" ]]; then      # nanopi-m1/m1+/neo/air
         modprobe fbtft_device name=matrix-st7789s gpios=dc:1,reset:203,cs:67
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0000" ]]; then	# nanopi 2
         modprobe fbtft_device name=matrix-st7789s gpios=dc:97,reset:60,cs:94        
