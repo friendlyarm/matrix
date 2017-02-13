@@ -65,6 +65,8 @@ elif [[ "x${FB_DEV}" = "x/dev/fb-st7789s" ]]; then
         modprobe fbtft_device name=matrix-st7789s gpios=dc:1,reset:203,cs:67
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0000" ]]; then	# nanopi 2
         modprobe fbtft_device name=matrix-st7789s gpios=dc:97,reset:60,cs:94        
+    elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0002" ]]; then  # nanopi s2
+        modprobe fbtft_device name=matrix-st7789s gpios=dc:60,reset:104,cs:94
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0004" ]]; then  # nanopi fire
         modprobe fbtft_device name=matrix-st7789s gpios=dc:60,reset:104,cs:94        
     elif [[ "x${HARDWARE}" = "xNANOPI2" ]] && [[ "x${REVISION}" = "x0005" ]]; then  # nanopi m2
