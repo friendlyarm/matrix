@@ -37,6 +37,7 @@ int main(int argc, char **argv)
         return 1;
     }
     system("modprobe "DRIVER_MODULE);
+    sleep(1);
     fd = open(rtc, O_RDONLY);
     if (fd ==  -1) {
         perror(rtc);
