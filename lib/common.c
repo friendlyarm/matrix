@@ -123,7 +123,7 @@ static int getBoardType()
         ret = BOARD_MINI210;
     } else if (strncasecmp(info[0], "TINY4412", 8)==0) {
         ret = BOARD_TINY4412;
-    } else if (strncasecmp(info[0], "sun8i", 5)==0) {
+    } else if (strncasecmp(info[0], "sun8i", strlen("sun8i"))==0 || strncasecmp(info[0], "Allwinnersun50iw2Family", strlen("Allwinnersun50iw2Family"))==0) {
         ret = BOARD_NANOPI_M1;
     } else if (strncasecmp(info[0], "NANOPI2", 7)==0) {
         if (strncasecmp(info[1], "0000", 4)==0) {
