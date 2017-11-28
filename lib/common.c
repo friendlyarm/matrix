@@ -65,8 +65,12 @@ static int getBoardInfo(int length, char info[][32])
     FILE *f;
     int ret = 0;
     
-    if (!(f = fopen("/proc/cpuinfo", "r"))) {
-    	setLastError("Unable to open /proc/cpuinfo");
+    f = fopen("/sys/devices/platform/board/info", "r");
+    if (!f)
+        f = fopen("/proc/cpuinfo", "r");
+
+    if (!f) {
+        setLastError("Unable to get board info");
         return ret;
     }
     
