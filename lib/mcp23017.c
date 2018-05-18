@@ -13,10 +13,11 @@ static unsigned char  BL = 0x08;
 static int pulseEnable(int devFD, unsigned char data)
 {
     clearLastError();
+    usleep(1000);
     if (I2CWriteByteTo(devFD, REG_GPIOA, (data | En), 0) == -1) {
         return -1;
     }
-    usleep(1);
+    usleep(1000);
     if (I2CWriteByteTo(devFD, REG_GPIOA, (data & ~En), 0) == -1) {
         return -1;
     }

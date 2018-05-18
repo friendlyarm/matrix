@@ -64,6 +64,7 @@ int main(int argc, char ** argv)
     printf("waiting key press...\n");
     while (1) {
         keyValue = LCD1602GetKey(devFD);
+		keyValue &= 0x1f;
         if (keyValue != lastKeyValue) {
             lastKeyValue = keyValue;
         } else if (showDefault != 1){
