@@ -20,10 +20,12 @@ int main(int argc, char **argv)
     const char *rtc = default_rtc;
     const char *date_time = default_date_time;
 
+#if 0
     if ((board = boardInit()) < 0) {
         printf("Fail to init board\n");
         return -1;
     }
+#endif
     
     switch (argc) {
     case 3:
