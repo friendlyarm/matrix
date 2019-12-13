@@ -11,8 +11,8 @@ int initPinGPIO(int board)
     switch(board) {
     case BOARD_NANOPI_M1: {
         int tempPinGPIO[41] = {-1, -1, -1, -1, -1, -1,  -1, 203, 198, -1, 199,
-                                    0,  6,  2, -1,  3, 200,  -1, 201, -1, -1,
-                                   -1,  1, -1, -1, -1,  -1,  -1,  -1, 20, -1,
+                                    0,  6,  2, -1,  3, 200,  -1, 201, 64, -1,
+                                   65,  1, -1, 67, -1,  -1,  -1,  -1, 20, -1,
                                    21,  7,  8, -1, 16,  13,   9,  15, -1, 14,
                                   };
         memcpy(pinGPIO, tempPinGPIO, sizeof(pinGPIO));
